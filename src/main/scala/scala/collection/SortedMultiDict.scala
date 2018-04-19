@@ -1,8 +1,9 @@
 package scala.collection
 
+import annotation.unchecked.uncheckedVariance
+
 /**
   * A multidict whose keys are sorted
- *
   * @tparam K the type of keys
   * @tparam V the type of values
   */
@@ -20,7 +21,7 @@ trait SortedMultiDictOps[K, V, +CC[X, Y] <: MultiDict[X, Y], +C <: MultiDict[K, 
   extends MultiDictOps[K, V, MultiDict, C]
     with SortedOps[K, C] {
 
-  protected[this] type SortedMultiDictCC[K, V] = CC[K, V]
+  protected[this] type SortedMultiDictCC[K, V] = CC[K, V] @uncheckedVariance
 
   def sortedMultiMapFactory: SortedMapFactory[SortedMultiDictCC]
 
@@ -51,13 +52,8 @@ trait SortedMultiDictOps[K, V, +CC[X, Y] <: MultiDict[X, Y], +C <: MultiDict[K, 
       until(next)
   }
 
-  override def withFilter(p: ((K, V)) => Boolean): SortedMultiMapWithFilter = new SortedMultiMapWithFilter(p)
-
-  class SortedMultiMapWithFilter(p: ((K, V)) => Boolean) extends MultiMapWithFilter(p) {
-    def map[L : Ordering, W](f: ((K, V)) => (L, W)): CC[L, W] = sortedFromIterable(new View.Map(filtered, f))
-    def flatMap[L : Ordering, W](f: ((K, V)) => IterableOnce[(L, W)]): CC[L, W] = sortedFromIterable(new View.FlatMap(filtered, f))
-    override def withFilter(q: ((K, V)) => Boolean): SortedMultiMapWithFilter = new SortedMultiMapWithFilter(kv => p(kv) && q(kv))
-  }
+  override def withFilter(p: ((K, V)) => Boolean): SortedMultiDictOps.WithFilter[K, V, IterableCC, MultiDictCC, CC] =
+    new SortedMultiDictOps.WithFilter[K, V, IterableCC, MultiDictCC, CC](this, p)
 
   /**
     * @return a sorted multidict that contains all the entries of `this` sorted multidict,
@@ -127,6 +123,26 @@ trait SortedMultiDictOps[K, V, +CC[X, Y] <: MultiDict[X, Y], +C <: MultiDict[K, 
     if (pf.isDefinedAt(kv)) new View.Single(pf(kv))
     else View.Empty
   )
+
+}
+
+object SortedMultiDictOps {
+
+  class WithFilter[K, V, +IterableCC[_], +MultiDictCC[X, Y] <: MultiDict[X, Y], +CC[X, Y] <: MultiDict[X, Y]](
+    `this`: SortedMultiDictOps[K, V, CC, _] with MultiDictOps[K, V, MultiDictCC, _] with IterableOps[(K, V), IterableCC, _],
+    p: ((K, V)) => Boolean
+  ) extends MultiDictOps.WithFilter[K, V, IterableCC, MultiDictCC](`this`, p) {
+
+    def map[L : Ordering, W](f: ((K, V)) => (L, W)): CC[L, W] =
+      `this`.sortedMultiMapFactory.from(new View.Map(filtered, f))
+
+    def flatMap[L : Ordering, W](f: ((K, V)) => IterableOnce[(L, W)]): CC[L, W] =
+      `this`.sortedMultiMapFactory.from(new View.FlatMap(filtered, f))
+
+    override def withFilter(q: ((K, V)) => Boolean): WithFilter[K, V, IterableCC, MultiDictCC, CC] =
+      new WithFilter[K, V, IterableCC, MultiDictCC, CC](`this`, kv => p(kv) && q(kv))
+
+  }
 
 }
 
