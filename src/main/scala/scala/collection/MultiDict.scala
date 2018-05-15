@@ -1,5 +1,8 @@
 package scala.collection
 
+import annotation.unchecked.uncheckedVariance
+import scala.util.hashing.MurmurHash3
+
 /**
   * A multidict is a map that can associate a set of values to a given key.
   *
@@ -14,7 +17,7 @@ trait MultiDict[K, V]
   def multiMapFactory: MapFactory[MultiDictCC] = MultiDict
 
   override protected[this] def fromSpecificIterable(coll: Iterable[(K, V)]): MultiDictCC[K, V] = multiMapFactory.from(coll)
-  override protected[this] def newSpecificBuilder(): mutable.Builder[(K, V), MultiDictCC[K, V]] = multiMapFactory.newBuilder[K, V]()
+  override protected[this] def newSpecificBuilder: mutable.Builder[(K, V), MultiDictCC[K, V]] = multiMapFactory.newBuilder[K, V]
 
   def canEqual(that: Any): Boolean = true
 
@@ -32,7 +35,7 @@ trait MultiDict[K, V]
     case _ => false
   }
 
-  override def hashCode(): Int = Set.unorderedHash(sets, "MultiMap".##)
+  override def hashCode(): Int = MurmurHash3.unorderedHash(sets, "MultiMap".##)
 
 }
 
@@ -40,7 +43,7 @@ trait MultiDict[K, V]
 trait MultiDictOps[K, V, +CC[X, Y] <: MultiDict[X, Y], +C <: MultiDict[K, V]]
   extends IterableOps[(K, V), Iterable, C] {
 
-  protected[this] type MultiDictCC[K, V] = CC[K, V]
+  protected[this] type MultiDictCC[K, V] = CC[K, V] @uncheckedVariance
 
   def multiMapFactory: MapFactory[MultiDictCC]
 
@@ -58,8 +61,8 @@ trait MultiDictOps[K, V, +CC[X, Y] <: MultiDict[X, Y], +C <: MultiDict[K, V]]
     */
   def sets: Map[K, Set[V]]
 
-  def iterator(): Iterator[(K, V)] =
-    sets.iterator().flatMap { case (k, vs) => vs.view.map(v => (k, v)) }
+  def iterator: Iterator[(K, V)] =
+    sets.iterator.flatMap { case (k, vs) => vs.view.map(v => (k, v)) }
 
   /**
     * @return The set of values associated with the given `key`, or the empty
@@ -133,13 +136,8 @@ trait MultiDictOps[K, V, +CC[X, Y] <: MultiDict[X, Y], +C <: MultiDict[K, V]]
   def concat(that: Iterable[(K, V)]): C =
     fromSpecificIterable(new View.Concat(toIterable, that))
 
-  override def withFilter(p: ((K, V)) => Boolean): MultiMapWithFilter = new MultiMapWithFilter(p)
-
-  class MultiMapWithFilter(p: ((K, V)) => Boolean) extends WithFilter(p) {
-    def map[L, W](f: ((K, V)) => (L, W)): CC[L, W] = multiMapFromIterable(new View.Map(filtered, f))
-    def flatMap[L, W](f: ((K, V)) => IterableOnce[(L, W)]): CC[L, W] = multiMapFromIterable(new View.FlatMap(filtered, f))
-    override def withFilter(q: ((K, V)) => Boolean): MultiMapWithFilter = new MultiMapWithFilter(kv => p(kv) && q(kv))
-  }
+  override def withFilter(p: ((K, V)) => Boolean): MultiDictOps.WithFilter[K, V, IterableCC, CC] =
+    new MultiDictOps.WithFilter(this, p)
 
   /**
     * @return Whether there exists a value associated with the given `key`
@@ -200,6 +198,25 @@ trait MultiDictOps[K, V, +CC[X, Y] <: MultiDict[X, Y], +C <: MultiDict[K, V]]
     */
   def filterSets(p: ((K, Set[V])) => Boolean): C =
     fromSpecificSets(new View.Filter(sets, p, isFlipped = false))
+
+}
+
+object MultiDictOps {
+
+  class WithFilter[K, V, +IterableCC[_], +CC[X, Y] <: MultiDict[X, Y]](
+    `this`: MultiDictOps[K, V, CC, _] with IterableOps[(K, V), IterableCC, _],
+    p: ((K, V)) => Boolean
+  ) extends IterableOps.WithFilter[(K, V), IterableCC](`this`, p) {
+
+    def map[L, W](f: ((K, V)) => (L, W)): CC[L, W] =
+      `this`.multiMapFactory.from(new View.Map(filtered, f))
+
+    def flatMap[L, W](f: ((K, V)) => IterableOnce[(L, W)]): CC[L, W] =
+      `this`.multiMapFactory.from(new View.FlatMap(filtered, f))
+
+    override def withFilter(q: ((K, V)) => Boolean): WithFilter[K, V, IterableCC, CC] =
+      new WithFilter[K, V, IterableCC, CC](`this`, (kv: (K, V)) => p(kv) && q(kv))
+  }
 
 }
 

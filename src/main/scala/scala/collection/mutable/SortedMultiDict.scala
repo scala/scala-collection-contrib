@@ -65,9 +65,9 @@ object SortedMultiDict extends SortedMapFactory[SortedMultiDict] {
     new SortedMultiDict(SortedMap.empty)
 
   def from[K: Ordering, V](it: IterableOnce[(K, V)]): SortedMultiDict[K, V] =
-    (newBuilder[K, V]() ++= it).result()
+    (newBuilder[K, V] ++= it).result()
 
-  def newBuilder[K: Ordering, V](): Builder[(K, V), SortedMultiDict[K, V]] =
+  def newBuilder[K: Ordering, V]: Builder[(K, V), SortedMultiDict[K, V]] =
     new GrowableBuilder[(K, V), SortedMultiDict[K, V]](empty)
 
 }

@@ -58,8 +58,8 @@ object MultiDict extends MapFactory[MultiDict] {
 
   def empty[K, V]: MultiDict[K, V] = new MultiDict(Map.empty)
 
-  def from[K, V](source: IterableOnce[(K, V)]): MultiDict[K, V] = (newBuilder[K, V]() ++= source).result()
+  def from[K, V](source: IterableOnce[(K, V)]): MultiDict[K, V] = (newBuilder[K, V] ++= source).result()
 
-  def newBuilder[K, V](): Builder[(K, V), MultiDict[K, V]] = new GrowableBuilder[(K, V), MultiDict[K, V]](empty)
+  def newBuilder[K, V]: Builder[(K, V), MultiDict[K, V]] = new GrowableBuilder[(K, V), MultiDict[K, V]](empty)
 
 }

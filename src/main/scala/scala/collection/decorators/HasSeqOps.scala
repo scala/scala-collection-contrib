@@ -1,7 +1,7 @@
 package scala.collection
 package decorators
 
-import scala.collection.immutable.{ImmutableArray, Range}
+import scala.collection.immutable.{ArraySeq, Range}
 
 /** Type class witnessing that a collection type `C` has
   * elements of type `A` and has a conversion to `SeqOps[A, _, _]`.
@@ -31,7 +31,7 @@ object HasSeqOps {
   implicit def stringHasSeqOps: HasSeqOps[String] { type A = Char } =
     new HasSeqOps[String] {
       type A = Char
-      def apply(c: String): SeqOps[Char, AnyConstr, _] = stringToStringOps(c)
+      def apply(c: String): SeqOps[Char, AnyConstr, _] = c: Seq[Char]
     }
 
   // 3. StringView
@@ -45,7 +45,7 @@ object HasSeqOps {
   implicit def arrayHasSeqOps[A0]: HasSeqOps[Array[A0]] { type A = A0 } =
     new HasSeqOps[Array[A0]] {
       type A = A0
-      def apply(c: Array[A0]): SeqOps[A0, AnyConstr, _] = ImmutableArray.unsafeWrapArray(c)
+      def apply(c: Array[A0]): SeqOps[A0, AnyConstr, _] = mutable.ArraySeq.make(c)
     }
 
   // 5. Range collections
