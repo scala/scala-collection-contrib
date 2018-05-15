@@ -13,7 +13,7 @@ class SortedMultiSetTest {
     Assert.assertEquals(2, sms.get(2))
     Assert.assertEquals(1, sms.firstKey)
     Assert.assertEquals(3, sms.lastKey)
-    Assert.assertEquals(SortedMultiSet(3, 2, 2), sms.from(2))
+    Assert.assertEquals(SortedMultiSet(3, 2, 2), sms.rangeFrom(2))
   }
 
   @Test def run(): Unit = {

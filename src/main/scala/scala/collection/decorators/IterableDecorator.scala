@@ -15,7 +15,7 @@ class IterableDecorator[C, I <: HasIterableOps[C]](coll: C)(implicit val it: I) 
     *         all the elements have been traversed or earlier if the operator returns `None`
     */
   def foldSomeLeft[B](z: B)(op: (B, it.A) => Option[B]): B =
-    it(coll).iterator().foldSomeLeft(z)(op)
+    it(coll).iterator.foldSomeLeft(z)(op)
 
   /**
     * Right to left fold that can be interrupted before traversing the whole collection.
@@ -29,6 +29,6 @@ class IterableDecorator[C, I <: HasIterableOps[C]](coll: C)(implicit val it: I) 
     *         `f` is applied to the previous result to produce the new result and the fold continues.
     */
   def lazyFoldRight[B](z: B)(op: it.A => Either[B, B => B]): B =
-    it(coll).iterator().lazyFoldRight(z)(op)
+    it(coll).iterator.lazyFoldRight(z)(op)
 
 }

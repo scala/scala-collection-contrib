@@ -17,7 +17,7 @@ class SortedMultiMapTest {
     Assert.assertEquals("a", smm.firstKey)
     Assert.assertEquals("c", smm.lastKey)
 
-    Assert.assertEquals(SortedMultiDict("c" -> 1), smm.from("c"))
+    Assert.assertEquals(SortedMultiDict("c" -> 1), smm.rangeFrom("c"))
 
     val smm2 = smm + ("a" -> 2)
     Assert.assertEquals(Set(1, 2), smm2.get("a"))

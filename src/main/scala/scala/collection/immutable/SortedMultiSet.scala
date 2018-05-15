@@ -52,12 +52,12 @@ object SortedMultiSet extends SortedIterableFactory[SortedMultiSet] {
   def from[A: Ordering](source: IterableOnce[A]): SortedMultiSet[A] =
     source match {
       case sms: SortedMultiSet[A] => sms
-      case _ => (newBuilder[A]() ++= source).result()
+      case _ => (newBuilder[A] ++= source).result()
     }
 
   def empty[A: Ordering]: SortedMultiSet[A] = new SortedMultiSet[A](TreeMap.empty)
 
-  def newBuilder[A: Ordering](): Builder[A, SortedMultiSet[A]] =
+  def newBuilder[A: Ordering]: Builder[A, SortedMultiSet[A]] =
     new ImmutableBuilder[A, SortedMultiSet[A]](empty) {
       def addOne(elem: A): this.type = { elems = elems + elem; this }
     }

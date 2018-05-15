@@ -14,7 +14,7 @@ class SortedMultiSetTest {
     Assert.assertEquals(2, sms.get(2))
     Assert.assertEquals(1, sms.firstKey)
     Assert.assertEquals(3, sms.lastKey)
-    Assert.assertEquals(SortedMultiSet(3, 2, 2), sms.from(2))
+    Assert.assertEquals(SortedMultiSet(3, 2, 2), sms.rangeFrom(2))
     val sms2 = sms + 2
     Assert.assertEquals(3, sms2.get(2))
     val sms3 = sms2 - 3

@@ -1,6 +1,7 @@
 package scala.collection
 
 import annotation.unchecked.uncheckedVariance
+import scala.util.hashing.MurmurHash3
 
 /**
   * A multidict is a map that can associate a set of values to a given key.
@@ -16,7 +17,7 @@ trait MultiDict[K, V]
   def multiMapFactory: MapFactory[MultiDictCC] = MultiDict
 
   override protected[this] def fromSpecificIterable(coll: Iterable[(K, V)]): MultiDictCC[K, V] = multiMapFactory.from(coll)
-  override protected[this] def newSpecificBuilder(): mutable.Builder[(K, V), MultiDictCC[K, V]] = multiMapFactory.newBuilder[K, V]()
+  override protected[this] def newSpecificBuilder: mutable.Builder[(K, V), MultiDictCC[K, V]] = multiMapFactory.newBuilder[K, V]
 
   def canEqual(that: Any): Boolean = true
 
@@ -34,7 +35,7 @@ trait MultiDict[K, V]
     case _ => false
   }
 
-  override def hashCode(): Int = Set.unorderedHash(sets, "MultiMap".##)
+  override def hashCode(): Int = MurmurHash3.unorderedHash(sets, "MultiMap".##)
 
 }
 
@@ -60,8 +61,8 @@ trait MultiDictOps[K, V, +CC[X, Y] <: MultiDict[X, Y], +C <: MultiDict[K, V]]
     */
   def sets: Map[K, Set[V]]
 
-  def iterator(): Iterator[(K, V)] =
-    sets.iterator().flatMap { case (k, vs) => vs.view.map(v => (k, v)) }
+  def iterator: Iterator[(K, V)] =
+    sets.iterator.flatMap { case (k, vs) => vs.view.map(v => (k, v)) }
 
   /**
     * @return The set of values associated with the given `key`, or the empty

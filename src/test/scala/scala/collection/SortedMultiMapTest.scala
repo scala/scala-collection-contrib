@@ -13,7 +13,7 @@ class SortedMultiMapTest {
     Assert.assertEquals(Set(0, 1), smm.get(2))
     Assert.assertEquals(1, smm.firstKey)
     Assert.assertEquals(3, smm.lastKey)
-    Assert.assertEquals(SortedMultiDict(3 -> 2, 2 -> 1, 2 -> 0), smm.from(2))
+    Assert.assertEquals(SortedMultiDict(3 -> 2, 2 -> 1, 2 -> 0), smm.rangeFrom(2))
   }
 
   @Test def run(): Unit = {

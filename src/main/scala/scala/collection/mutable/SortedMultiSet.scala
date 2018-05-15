@@ -44,10 +44,10 @@ class SortedMultiSet[A] private (elems: SortedMap[A, Int])(implicit val ordering
 
 object SortedMultiSet extends SortedIterableFactory[SortedMultiSet] {
 
-  def from[E: Ordering](it: IterableOnce[E]): SortedMultiSet[E] = (newBuilder[E]() ++= it).result()
+  def from[E: Ordering](it: IterableOnce[E]): SortedMultiSet[E] = (newBuilder[E] ++= it).result()
 
   def empty[A: Ordering]: SortedMultiSet[A] = new SortedMultiSet[A](SortedMap.empty[A, Int])
 
-  def newBuilder[A: Ordering](): Builder[A, SortedMultiSet[A]] = new GrowableBuilder[A, SortedMultiSet[A]](empty)
+  def newBuilder[A: Ordering]: Builder[A, SortedMultiSet[A]] = new GrowableBuilder[A, SortedMultiSet[A]](empty)
 
 }

@@ -76,12 +76,12 @@ object MultiSet extends IterableFactory[MultiSet] {
   def from[A](source: IterableOnce[A]): MultiSet[A] =
     source match {
       case ms: MultiSet[A] => ms
-      case _ => (newBuilder[A]() ++= source).result()
+      case _ => (newBuilder[A] ++= source).result()
     }
 
   def empty[A] = new MultiSetImpl[A](Map.empty)
 
-  def newBuilder[A](): Builder[A, MultiSet[A]] =
+  def newBuilder[A]: Builder[A, MultiSet[A]] =
     new ImmutableBuilder[A, MultiSet[A]](empty[A]) {
       def addOne(elem: A): this.type = { elems = elems + elem; this }
     }

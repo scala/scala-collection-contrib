@@ -40,10 +40,10 @@ class MultiSetImpl[A] private[mutable] (val elems: Map[A, Int]) extends MultiSet
 
 object MultiSet extends IterableFactory[MultiSet] {
 
-  def from[A](source: IterableOnce[A]): MultiSet[A] = (newBuilder[A]() ++= source).result()
+  def from[A](source: IterableOnce[A]): MultiSet[A] = (newBuilder[A] ++= source).result()
 
   def empty[A]: MultiSet[A] = new MultiSetImpl[A](Map.empty)
 
-  def newBuilder[A](): Builder[A, MultiSet[A]] = new GrowableBuilder[A, MultiSet[A]](empty)
+  def newBuilder[A]: Builder[A, MultiSet[A]] = new GrowableBuilder[A, MultiSet[A]](empty)
 
 }

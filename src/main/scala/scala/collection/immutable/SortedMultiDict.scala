@@ -70,10 +70,10 @@ object SortedMultiDict extends SortedMapFactory[SortedMultiDict] {
   def from[K: Ordering, V](it: IterableOnce[(K, V)]): SortedMultiDict[K, V] =
     it match {
       case smm: SortedMultiDict[K, V] => smm
-      case _ => (newBuilder[K, V]() ++= it).result()
+      case _ => (newBuilder[K, V] ++= it).result()
     }
 
-  def newBuilder[K: Ordering, V](): Builder[(K, V), SortedMultiDict[K, V]] =
+  def newBuilder[K: Ordering, V]: Builder[(K, V), SortedMultiDict[K, V]] =
     new ImmutableBuilder[(K, V), SortedMultiDict[K, V]](empty[K, V]) {
       def addOne(elem: (K, V)): this.type = { elems = elems + elem; this }
     }

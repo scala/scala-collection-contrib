@@ -13,7 +13,7 @@ trait SortedMultiSet[A]
   def unsorted: MultiSet[A] = this
 
   override protected[this] def fromSpecificIterable(coll: Iterable[A]): SortedIterableCC[A] = sortedIterableFactory.from(coll)
-  override protected[this] def newSpecificBuilder(): mutable.Builder[A, SortedIterableCC[A]] = sortedIterableFactory.newBuilder[A]()
+  override protected[this] def newSpecificBuilder: mutable.Builder[A, SortedIterableCC[A]] = sortedIterableFactory.newBuilder[A]
 
   protected[this] def sortedFromIterable[B : Ordering](it: scala.collection.Iterable[B]): SortedIterableCC[B] = sortedIterableFactory.from(it)
 
@@ -52,14 +52,14 @@ trait SortedMultiSetOps[A, +CC[X] <: MultiSet[X], +C <: MultiSet[A]]
   def lastKey: A = occurrences.lastKey
 
   def rangeTo(to: A): C = {
-    val i = from(to).iterator()
+    val i = rangeFrom(to).iterator
     if (i.isEmpty) return coll
     val next = i.next()
     if (ordering.compare(next, to) == 0)
       if (i.isEmpty) coll
-      else until(i.next())
+      else rangeUntil(i.next())
     else
-      until(next)
+      rangeUntil(next)
   }
 
   override def withFilter(p: A => Boolean): SortedMultiSetOps.WithFilter[A, IterableCC, CC] =

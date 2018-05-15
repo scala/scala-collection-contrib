@@ -1,5 +1,7 @@
 package scala.collection
 
+import scala.util.hashing.MurmurHash3
+
 /**
   * A multiset is a set that can contain multiple occurrences of a same value.
   *
@@ -26,7 +28,7 @@ trait MultiSet[A]
     case _ => false
   }
 
-  override def hashCode(): Int = collection.Set.unorderedHash(occurrences, "MultiSet".##)
+  override def hashCode(): Int = MurmurHash3.unorderedHash(occurrences, "MultiSet".##)
 
 }
 
@@ -45,8 +47,8 @@ trait MultiSetOps[A, +CC[X] <: MultiSet[X], +C <: MultiSet[A]]
     */
   def occurrences: Map[A, Int]
 
-  def iterator(): Iterator[A] =
-    occurrences.iterator().flatMap { case (elem, n) => new View.Fill(n)(elem) }
+  def iterator: Iterator[A] =
+    occurrences.iterator.flatMap { case (elem, n) => new View.Fill(n)(elem) }
 
   /**
     * @return The number of occurrences of `elem` in this multiset

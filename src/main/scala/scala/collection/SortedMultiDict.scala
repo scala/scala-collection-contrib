@@ -14,14 +14,14 @@ trait SortedMultiDict[K, V]
   def unsorted: MultiDict[K, V] = this
 
   override protected[this] def fromSpecificIterable(coll: Iterable[(K, V)]): SortedMultiDictCC[K, V] = sortedMultiMapFactory.from(coll)
-  override protected[this] def newSpecificBuilder(): mutable.Builder[(K, V), SortedMultiDictCC[K, V]] = sortedMultiMapFactory.newBuilder[K, V]()
+  override protected[this] def newSpecificBuilder: mutable.Builder[(K, V), SortedMultiDictCC[K, V]] = sortedMultiMapFactory.newBuilder[K, V]
 }
 
 trait SortedMultiDictOps[K, V, +CC[X, Y] <: MultiDict[X, Y], +C <: MultiDict[K, V]]
   extends MultiDictOps[K, V, MultiDict, C]
     with SortedOps[K, C] {
 
-  protected[this] type SortedMultiDictCC[K, V] = CC[K, V] @uncheckedVariance
+  protected[this] type SortedMultiDictCC[X, Y] = CC[X, Y] @uncheckedVariance
 
   def sortedMultiMapFactory: SortedMapFactory[SortedMultiDictCC]
 
@@ -42,14 +42,14 @@ trait SortedMultiDictOps[K, V, +CC[X, Y] <: MultiDict[X, Y], +C <: MultiDict[K, 
   def lastKey: K = sets.lastKey
 
   def rangeTo(to: K): C = {
-    val i = from(to).iterator()
+    val i = rangeFrom(to).iterator
     if (i.isEmpty) return coll
     val next = i.next()._1
     if (ordering.compare(next, to) == 0)
       if (i.isEmpty) coll
-      else until(i.next()._1)
+      else rangeUntil(i.next()._1)
     else
-      until(next)
+      rangeUntil(next)
   }
 
   override def withFilter(p: ((K, V)) => Boolean): SortedMultiDictOps.WithFilter[K, V, IterableCC, MultiDictCC, CC] =
