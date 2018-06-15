@@ -16,6 +16,13 @@ class SeqDecoratorTest {
     assertEquals(List(0, 1, 2), List(1).intersperse(0, 5, 2))
   }
 
+  @Test def splitWith(): Unit = {
+    assertEquals(List(List()), List().splitWith(_ => true))
+    assertEquals(List(List()), List().splitWith(_ => false))
+    assertEquals(List(List(1), List(2, 4, 6), List(7)), List(1, 2, 4, 6, 7).splitWith(i => i % 2 == 0))
+    assertEquals(List(List('a', 'b'), List('C', 'D'), List('e', 'f')), List('a', 'b', 'C', 'D', 'e', 'f').splitWith(_.isUpper))
+  }
+
   // This test just checks that there is no compilation error
   @Test def genericDecorator(): Unit = {
     val vector = Vector(1, 2, 3)
