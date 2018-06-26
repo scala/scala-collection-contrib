@@ -1,0 +1,6 @@
+classes
+target
+.idea
+.idea_modules
+*.icode
+project/local.sbt
