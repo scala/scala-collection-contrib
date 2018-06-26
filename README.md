@@ -22,6 +22,7 @@ The following operations are provided:
 
 - `Seq`
     - `intersperse`
+    - `replaced`
 - `Map`
     - `zipByKey` / `join` / `zipByKeyWith`
     - `mergeByKey` / `fullOuterJoin` / `mergeByKeyWith` / `leftOuterJoin` / `rightOuterJoin`

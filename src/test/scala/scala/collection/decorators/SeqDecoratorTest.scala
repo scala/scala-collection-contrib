@@ -39,4 +39,10 @@ class SeqDecoratorTest {
 
   def typed[T](t: => T): Unit = ()
 
+  @Test def testReplaced(): Unit = {
+    val s = Seq(1, 2, 3, 2, 1)
+    assertEquals(s.replaced(2, 4), Seq(1, 4, 3, 4, 1))
+    assertEquals(s.replaced(3, 4), Seq(1, 2, 4, 2, 1))
+    assertEquals(s.replaced(4, 4), s)
+  }
 }

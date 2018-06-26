@@ -41,4 +41,16 @@ class SeqDecorator[C, S <: HasSeqOps[C]](coll: C)(implicit val seq: S) {
   def intersperse[B >: seq.A, That](start: B, sep: B, end: B)(implicit bf: BuildFrom[C, B, That]): That =
     bf.fromSpecificIterable(coll)(new View.IntersperseSurround(seq(coll), start, sep, end))
 
+  /** Produces a new sequence where all occurrences of some element are replaced by
+    * a different element.
+    *
+    * @param elem        the element to replace
+    * @param replacement the replacement element
+    * @tparam B          the element type of the returned $coll.
+    * @return            a new sequence consisting of all elements of this sequence
+    *                    except that all occurrences of `elem` are replaced by
+    *                    `replacement`
+    */
+  def replaced[B >: seq.A, That](elem: B, replacement: B)(implicit bf: BuildFrom[C, B, That]): That =
+    bf.fromSpecificIterable(coll)(new collection.View.Map(seq(coll), (a: seq.A) => if (a == elem) replacement else a))
 }
