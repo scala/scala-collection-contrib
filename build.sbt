@@ -42,7 +42,7 @@ credentials ++= (
 ).toList
 
 libraryDependencies ++= Seq(
-  "junit"            % "junit"           % "4.11",
+  "junit"            % "junit"           % "4.12",
   "com.novocode"     % "junit-interface" % "0.11"   % Test,
   "org.openjdk.jol"  % "jol-core"        % "0.5"
 )
