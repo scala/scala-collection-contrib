@@ -1,4 +1,4 @@
-// TODO Make it a cross project when Scala.js is released for 2.13.0-M4
+// TODO Make it a cross project including Scala.js
 
 scalaVersion := "2.13.0-M4"
 
