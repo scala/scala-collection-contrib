@@ -1,4 +1,4 @@
-// TODO Make it a cross project when Scala.js is released for 2.13.0-M4
+// TODO Make it a cross project including Scala.js
 
 scalaVersion := "2.13.0-M4"
 
@@ -17,8 +17,8 @@ fork in Test := true
 parallelExecution in Test := false
 
 homepage := Some(url("https://github.com/scala/scala-collection-contrib"))
- 
-licenses := Seq("BSD 3-clause" -> url("http://opensource.org/licenses/BSD-3-Clause"))
+
+licenses := Seq("Apache-2.0" -> url("https://www.apache.org/licenses/LICENSE-2.0"))
 
 scmInfo := Some(
   ScmInfo(
@@ -46,4 +46,3 @@ libraryDependencies ++= Seq(
   "com.novocode"     % "junit-interface" % "0.11"   % Test,
   "org.openjdk.jol"  % "jol-core"        % "0.9"
 )
-
