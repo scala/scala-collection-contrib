@@ -3,7 +3,6 @@ package collection
 package immutable
 
 import scala.collection.mutable.{Builder, ImmutableBuilder}
-import scala.collection.decorators._
 
 /**
   * An immutable multidict whose keys are sorted
@@ -33,7 +32,7 @@ class SortedMultiDict[K, V] private (elems: SortedMap[K, Set[V]])(implicit val o
     new SortedMultiDict(elems.updatedWith(key) {
       case None     => Some(Set(value))
       case Some(vs) => Some(vs + value)
-    })
+    }.asInstanceOf[SortedMap[K, Set[V]]] /* temporary */)
 
   /** Alias for `add` */
   @`inline` final def + (kv: (K, V)): SortedMultiDict[K, V] = add(kv._1, kv._2)
@@ -47,7 +46,8 @@ class SortedMultiDict[K, V] private (elems: SortedMap[K, Set[V]])(implicit val o
       case Some(vs) =>
         val updatedVs = vs - value
         if (updatedVs.nonEmpty) Some(updatedVs) else None
-    })
+      case None => None
+    }.asInstanceOf[SortedMap[K, Set[V]]] /* temporary */)
 
   /** Alias for `remove` */
   @`inline` final def - (kv: (K, V)): SortedMultiDict[K, V] = remove(kv._1, kv._2)

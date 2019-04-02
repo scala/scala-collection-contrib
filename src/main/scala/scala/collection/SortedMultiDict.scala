@@ -13,7 +13,7 @@ trait SortedMultiDict[K, V]
 
   def unsorted: MultiDict[K, V] = this
 
-  override protected[this] def fromSpecificIterable(coll: Iterable[(K, V)]): SortedMultiDictCC[K, V] = sortedMultiMapFactory.from(coll)
+  override protected[this] def fromSpecific(coll: IterableOnce[(K, V)]): SortedMultiDictCC[K, V] = sortedMultiMapFactory.from(coll)
   override protected[this] def newSpecificBuilder: mutable.Builder[(K, V), SortedMultiDictCC[K, V]] = sortedMultiMapFactory.newBuilder[K, V]
 }
 

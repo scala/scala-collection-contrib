@@ -16,7 +16,7 @@ trait MultiDict[K, V]
 
   def multiMapFactory: MapFactory[MultiDictCC] = MultiDict
 
-  override protected[this] def fromSpecificIterable(coll: Iterable[(K, V)]): MultiDictCC[K, V] = multiMapFactory.from(coll)
+  override protected[this] def fromSpecific(coll: IterableOnce[(K, V)]): MultiDictCC[K, V] = multiMapFactory.from(coll)
   override protected[this] def newSpecificBuilder: mutable.Builder[(K, V), MultiDictCC[K, V]] = multiMapFactory.newBuilder[K, V]
 
   def canEqual(that: Any): Boolean = true
@@ -51,7 +51,7 @@ trait MultiDictOps[K, V, +CC[X, Y] <: MultiDict[X, Y], +C <: MultiDict[K, V]]
     multiMapFactory.from(it)
 
   protected[this] def fromSpecificSets(it: Iterable[(K, Set[V])]): C =
-    fromSpecificIterable(it.view.flatMap { case (k, vs) => vs.view.map(v => (k, v)) })
+    fromSpecific(it.view.flatMap { case (k, vs) => vs.view.map(v => (k, v)) })
 
   protected[this] def fromSets[L, W](it: Iterable[(L, Set[W])]): CC[L, W] =
     multiMapFromIterable(it.view.flatMap { case (k, vs) => vs.view.map(v => (k, v)) })
@@ -133,8 +133,10 @@ trait MultiDictOps[K, V, +CC[X, Y] <: MultiDict[X, Y], +C <: MultiDict[K, V]]
     )
 
   /** Concatenate the entries given in `that` iterable to `this` multidict */
-  def concat(that: Iterable[(K, V)]): C =
-    fromSpecificIterable(new View.Concat(toIterable, that))
+  def concat(that: IterableOnce[(K, V)]): C = fromSpecific(that match {
+    case that: collection.Iterable[(K, V)] => new View.Concat(toIterable, that)
+    case _ => iterator ++ that.iterator
+  })
 
   override def withFilter(p: ((K, V)) => Boolean): MultiDictOps.WithFilter[K, V, IterableCC, CC] =
     new MultiDictOps.WithFilter(this, p)

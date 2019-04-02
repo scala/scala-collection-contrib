@@ -2,7 +2,9 @@ package scala
 package collection
 package decorators
 
-class IterableDecorator[C, I <: HasIterableOps[C]](coll: C)(implicit val it: I) {
+import scala.collection.generic.IsIterable
+
+class IterableDecorator[C, I <: IsIterable[C]](coll: C)(implicit val it: I) {
 
   /**
     * Left to right fold that stops if the combination function `op`

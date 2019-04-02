@@ -2,8 +2,6 @@ package scala
 package collection
 package mutable
 
-import scala.collection.decorators.MutableMapDecorator
-
 /**
   * A mutable multiset.
   */
@@ -14,9 +12,12 @@ trait MultiSet[A]
     with Shrinkable [A] {
 
   override def iterableFactory: IterableFactory[MultiSet] = MultiSet
+  override def knownSize = super[Growable].knownSize
 }
 
 class MultiSetImpl[A] private[mutable] (val elems: Map[A, Int]) extends MultiSet[A] {
+
+  override def knownSize = elems.knownSize
 
   def occurrences: collection.Map[A, Int] = elems
 
@@ -31,6 +32,7 @@ class MultiSetImpl[A] private[mutable] (val elems: Map[A, Int]) extends MultiSet
   def subtractOne(elem: A): this.type = {
     elems.updateWith(elem) {
       case Some(n) => if (n > 1) Some(n - 1) else None
+      case None => None
     }
     this
   }

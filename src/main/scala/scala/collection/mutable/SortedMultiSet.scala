@@ -2,8 +2,6 @@ package scala
 package collection
 package mutable
 
-import scala.collection.decorators.MutableMapDecorator
-
 /**
   * A mutable multiset whose elements are sorted according to a given ordering.
   *
@@ -35,6 +33,7 @@ class SortedMultiSet[A] private (elems: SortedMap[A, Int])(implicit val ordering
   def subtractOne(elem: A): this.type = {
     elems.updateWith(elem) {
       case Some(n) => if (n > 1) Some(n - 1) else None
+      case None => None
     }
     this
   }

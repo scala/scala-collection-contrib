@@ -12,7 +12,7 @@ trait SortedMultiSet[A]
 
   def unsorted: MultiSet[A] = this
 
-  override protected[this] def fromSpecificIterable(coll: Iterable[A]): SortedIterableCC[A] = sortedIterableFactory.from(coll)
+  override protected[this] def fromSpecific(coll: IterableOnce[A]): SortedIterableCC[A] = sortedIterableFactory.from(coll)
   override protected[this] def newSpecificBuilder: mutable.Builder[A, SortedIterableCC[A]] = sortedIterableFactory.newBuilder[A]
 
   protected[this] def sortedFromIterable[B : Ordering](it: scala.collection.Iterable[B]): SortedIterableCC[B] = sortedIterableFactory.from(it)
@@ -165,7 +165,7 @@ object SortedMultiSetOps {
   class WithFilter[A, +IterableCC[_], +CC[X] <: MultiSet[X]](
     `this`: SortedMultiSetOps[A, CC, _] with IterableOps[A, IterableCC, _],
     p: A => Boolean
-  ) extends IterableOps.WithFilter(`this`, p) {
+  ) extends IterableOps.WithFilter[A, IterableCC](`this`, p) {
 
     def map[B : Ordering](f: A => B): CC[B] =
       `this`.sortedIterableFactory.from(new View.Map(filtered, f))

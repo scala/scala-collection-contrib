@@ -1,7 +1,9 @@
 package scala.collection
 package decorators
 
-class MapDecorator[C, M <: HasMapOps[C]](coll: C)(implicit val map: M) {
+import scala.collection.generic.IsMap
+
+class MapDecorator[C, M <: IsMap[C]](coll: C)(implicit val map: M) {
 
   /**
     * Combines entries of `this` Map with entries of `that` Map that have the same key,

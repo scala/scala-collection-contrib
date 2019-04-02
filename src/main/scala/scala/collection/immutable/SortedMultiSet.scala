@@ -2,7 +2,6 @@ package scala
 package collection
 package immutable
 
-import scala.collection.decorators.ImmutableMapDecorator
 import scala.collection.mutable.{Builder, ImmutableBuilder}
 
 /**
@@ -33,7 +32,7 @@ class SortedMultiSet[A] private (elems: SortedMap[A, Int])(implicit val ordering
     new SortedMultiSet(elems.updatedWith(elem) {
       case None    => Some(1)
       case Some(n) => Some(n + 1)
-    })
+    }.asInstanceOf[SortedMap[A, Int]] /* temporary */)
 
   /**
     * @return an immutable sorted multiset containing all the elements of
@@ -44,7 +43,8 @@ class SortedMultiSet[A] private (elems: SortedMap[A, Int])(implicit val ordering
   def excl(elem: A): SortedMultiSet[A] =
     new SortedMultiSet(elems.updatedWith(elem) {
       case Some(n) => if (n > 1) Some(n - 1) else None
-    })
+      case None => None
+    }.asInstanceOf[SortedMap[A, Int]] /* temporary */)
 }
 
 object SortedMultiSet extends SortedIterableFactory[SortedMultiSet] {

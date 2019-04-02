@@ -16,6 +16,7 @@ class MultiDict[K, V] private (elems: Map[K, Set[V]])
     with Shrinkable[(K, V)] {
 
   override def multiMapFactory: MapFactory[MultiDict] = MultiDict
+  override def knownSize = elems.knownSize
 
   def sets: collection.Map[K, collection.Set[V]] = elems
 
@@ -34,6 +35,7 @@ class MultiDict[K, V] private (elems: Map[K, Set[V]])
       case Some(vs) =>
         vs -= v
         if (vs.nonEmpty) Some(vs) else None
+      case None => None
     }
     this
   }

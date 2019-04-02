@@ -4,8 +4,6 @@ package immutable
 
 import scala.collection.mutable.{Builder, ImmutableBuilder}
 
-import scala.collection.decorators.ImmutableMapDecorator
-
 /**
   * An immutable multiset
   * @tparam A the element type of the collection
@@ -46,6 +44,7 @@ class MultiSetImpl[A] private[immutable] (elems: Map[A, Int]) extends MultiSet[A
   def occurrences: Map[A, Int] = elems
 
   override def iterableFactory: IterableFactory[MultiSet] = MultiSet
+  override def knownSize = elems.knownSize
 
   /**
     * @return an immutable multiset containing all the elements of this multiset
@@ -67,6 +66,7 @@ class MultiSetImpl[A] private[immutable] (elems: Map[A, Int]) extends MultiSet[A
   def excl(elem: A): MultiSet[A] =
     new MultiSetImpl(elems.updatedWith(elem) {
       case Some(n) => if (n > 1) Some(n - 1) else None
+      case None => None
     })
 
 }

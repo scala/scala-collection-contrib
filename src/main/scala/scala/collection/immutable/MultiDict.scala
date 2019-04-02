@@ -29,6 +29,7 @@ class MultiDict[K, V] private (elems: Map[K, Set[V]])
       case Some(vs) =>
         val updatedVs = vs - value
         if (updatedVs.nonEmpty) Some(updatedVs) else None
+      case None => None
     })
 
   /** Alias for `remove` */
