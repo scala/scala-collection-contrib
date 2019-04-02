@@ -5,7 +5,7 @@ jdk:
   - openjdk11
 
 scala:
-  - 2.13.0-M4
+  - 2.13.0-pre-370f5c8
 
 script:
   - sbt ++$TRAVIS_SCALA_VERSION test
