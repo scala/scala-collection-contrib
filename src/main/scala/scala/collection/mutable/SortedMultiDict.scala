@@ -15,6 +15,8 @@ class SortedMultiDict[K, V] private (elems: SortedMap[K, Set[V]])(implicit val o
     with Growable[(K, V)]
     with Shrinkable[(K, V)] {
 
+  override def knownSize = -1
+
   def sets: collection.SortedMap[K, collection.Set[V]] = elems
 
   override def sortedMultiDictFactory: SortedMapFactory[SortedMultiDict] = SortedMultiDict

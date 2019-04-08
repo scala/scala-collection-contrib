@@ -21,6 +21,7 @@ class MultiDict[K, V] private (elems: Map[K, Set[V]])
   override def empty: MultiDict[K, V] = multiDictFactory.empty
   override def withFilter(p: ((K, V)) => Boolean): MultiDictOps.WithFilter[K, V, Iterable, MultiDict] =
     new MultiDictOps.WithFilter(this, p)
+  override def knownSize = -1
 
   def sets: collection.Map[K, collection.Set[V]] = elems
 
