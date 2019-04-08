@@ -3,7 +3,6 @@ package collection
 package immutable
 
 import scala.collection.mutable.{Builder, ImmutableBuilder}
-import scala.collection.decorators._
 
 /**
   * An immutable multidict whose keys are sorted
@@ -16,9 +15,12 @@ class SortedMultiDict[K, V] private (elems: SortedMap[K, Set[V]])(implicit val o
     with collection.SortedMultiDictOps[K, V, SortedMultiDict, SortedMultiDict[K, V]]
     with collection.IterableOps[(K, V), Iterable, SortedMultiDict[K, V]] {
 
-  def sortedMultiMapFactory: SortedMapFactory[SortedMultiDict] = SortedMultiDict
-
-  protected[this] def sortedFromIterable[L: Ordering, W](it: collection.Iterable[(L, W)]): SortedMultiDict[L, W] = sortedMultiMapFactory.from(it)
+  override def sortedMultiDictFactory: SortedMapFactory[SortedMultiDict] = SortedMultiDict
+  override protected def fromSpecific(coll: IterableOnce[(K, V)]): SortedMultiDict[K, V] = sortedMultiDictFactory.from(coll)
+  override protected def newSpecificBuilder: mutable.Builder[(K, V), SortedMultiDict[K, V]] = sortedMultiDictFactory.newBuilder[K, V]
+  override def empty: SortedMultiDict[K, V] = sortedMultiDictFactory.empty
+  override def withFilter(p: ((K, V)) => Boolean): SortedMultiDictOps.WithFilter[K, V, Iterable, collection.MultiDict, SortedMultiDict] =
+    new SortedMultiDictOps.WithFilter[K, V, Iterable, collection.MultiDict, SortedMultiDict](this, p)
 
   def sets: SortedMap[K, Set[V]] = elems
 
@@ -47,6 +49,7 @@ class SortedMultiDict[K, V] private (elems: SortedMap[K, Set[V]])(implicit val o
       case Some(vs) =>
         val updatedVs = vs - value
         if (updatedVs.nonEmpty) Some(updatedVs) else None
+      case None => None
     })
 
   /** Alias for `remove` */

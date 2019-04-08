@@ -12,6 +12,11 @@ trait MultiSet[A]
     with MultiSetOps[A, MultiSet, MultiSet[A]]
     with Equals {
 
+  override def iterableFactory: IterableFactory[MultiSet] = MultiSet
+  override protected def fromSpecific(coll: IterableOnce[A]): MultiSet[A] = iterableFactory.from(coll)
+  override protected def newSpecificBuilder: mutable.Builder[A, MultiSet[A]] = iterableFactory.newBuilder
+  override def empty: MultiSet[A] = iterableFactory.empty
+
   def canEqual(that: Any): Boolean = true
 
   override def equals(o: Any): Boolean = o match {
@@ -36,11 +41,11 @@ trait MultiSetOps[A, +CC[X] <: MultiSet[X], +C <: MultiSet[A]]
   extends IterableOps[A, CC, C] {
 
   protected[this] def fromSpecificOccurrences(it: Iterable[(A, Int)]): C =
-    fromSpecificIterable(it.view.flatMap { case (e, n) => new View.Fill(n)(e) })
+    fromSpecific(it.view.flatMap { case (e, n) => new View.Fill(n)(e) })
 
   protected[this] def fromOccurrences[E](it: Iterable[(E, Int)]): CC[E] =
     // Note new MultiSet(it.to(Map)) would be more efficient but would also loose duplicates
-    fromIterable(it.view.flatMap { case (e, n) => new View.Fill(n)(e) })
+    iterableFactory.from(it.view.flatMap { case (e, n) => new View.Fill(n)(e) })
 
   /**
     * @return All the elements contained in this multiset and their number of occurrences
@@ -68,8 +73,10 @@ trait MultiSetOps[A, +CC[X] <: MultiSet[X], +C <: MultiSet[A]]
     *
     * @param that the collection of elements to add to this multiset
     */
-  def concat(that: Iterable[A]): C =
-    fromSpecificIterable(new View.Concat(toIterable, that))
+  def concat(that: IterableOnce[A]): C = fromSpecific(that match {
+    case that: collection.Iterable[A] => new View.Concat(this, that)
+    case _ => iterator.concat(that.iterator)
+  })
 
   /**
     * @return a new multiset summing the occurrences of this multiset

@@ -2,7 +2,6 @@ package scala
 package collection
 package immutable
 
-import scala.collection.decorators.ImmutableMapDecorator
 import scala.collection.mutable.{Builder, ImmutableBuilder}
 
 /**
@@ -18,8 +17,12 @@ class SortedMultiSet[A] private (elems: SortedMap[A, Int])(implicit val ordering
 
   def occurrences: SortedMap[A, Int] = elems
 
-  override def iterableFactory: IterableFactory[MultiSet] = MultiSet
   override def sortedIterableFactory: SortedIterableFactory[SortedMultiSet] = SortedMultiSet
+  override protected def fromSpecific(coll: IterableOnce[A]): SortedMultiSet[A] = sortedIterableFactory.from(coll)
+  override protected def newSpecificBuilder: mutable.Builder[A, SortedMultiSet[A]] = sortedIterableFactory.newBuilder[A]
+  override def empty: SortedMultiSet[A] = sortedIterableFactory.empty
+  override def withFilter(p: A => Boolean): SortedMultiSetOps.WithFilter[A, MultiSet, SortedMultiSet] =
+    new SortedMultiSetOps.WithFilter(this, p)
 
   def rangeImpl(from: Option[A], until: Option[A]): SortedMultiSet[A] =
     new SortedMultiSet(elems.rangeImpl(from, until))
@@ -44,6 +47,7 @@ class SortedMultiSet[A] private (elems: SortedMap[A, Int])(implicit val ordering
   def excl(elem: A): SortedMultiSet[A] =
     new SortedMultiSet(elems.updatedWith(elem) {
       case Some(n) => if (n > 1) Some(n - 1) else None
+      case None => None
     })
 }
 

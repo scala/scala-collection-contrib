@@ -2,8 +2,6 @@ package scala
 package collection
 package mutable
 
-import collection.decorators._
-
 /**
   * A mutable multidict
   * @tparam K the type of keys
@@ -11,11 +9,19 @@ import collection.decorators._
   */
 class MultiDict[K, V] private (elems: Map[K, Set[V]])
   extends collection.MultiDict[K, V]
+    with Iterable[(K, V)]
+    with IterableOps[(K, V), Iterable, MultiDict[K, V]]
     with collection.MultiDictOps[K, V, MultiDict, MultiDict[K, V]]
     with Growable[(K, V)]
     with Shrinkable[(K, V)] {
 
-  override def multiMapFactory: MapFactory[MultiDict] = MultiDict
+  override def multiDictFactory: MapFactory[MultiDict] = MultiDict
+  override protected def fromSpecific(coll: IterableOnce[(K, V)]): MultiDict[K, V] = multiDictFactory.from(coll)
+  override protected def newSpecificBuilder: mutable.Builder[(K, V), MultiDict[K, V]] = multiDictFactory.newBuilder[K, V]
+  override def empty: MultiDict[K, V] = multiDictFactory.empty
+  override def withFilter(p: ((K, V)) => Boolean): MultiDictOps.WithFilter[K, V, Iterable, MultiDict] =
+    new MultiDictOps.WithFilter(this, p)
+  override def knownSize = -1
 
   def sets: collection.Map[K, collection.Set[V]] = elems
 
@@ -34,6 +40,7 @@ class MultiDict[K, V] private (elems: Map[K, Set[V]])
       case Some(vs) =>
         vs -= v
         if (vs.nonEmpty) Some(vs) else None
+      case None => None
     }
     this
   }

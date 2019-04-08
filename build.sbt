@@ -1,6 +1,6 @@
 // TODO Make it a cross project including Scala.js
 
-scalaVersion := "2.13.0-M4"
+scalaVersion := "2.13.0-RC1"
 
 organization := "org.scala-lang"
 

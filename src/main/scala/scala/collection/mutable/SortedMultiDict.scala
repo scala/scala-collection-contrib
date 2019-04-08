@@ -2,24 +2,29 @@ package scala
 package collection
 package mutable
 
-import scala.collection.decorators._
-
 /**
   * A mutable multidict whose keys are sorted
   * @tparam K the type of keys
   * @tparam V the type of values
   */
 class SortedMultiDict[K, V] private (elems: SortedMap[K, Set[V]])(implicit val ordering: Ordering[K])
-  extends collection.SortedMultiDict[K, V]
+  extends Iterable[(K, V)]
+    with collection.SortedMultiDict[K, V]
+    with IterableOps[(K, V), Iterable, SortedMultiDict[K, V]]
     with collection.SortedMultiDictOps[K, V, SortedMultiDict, SortedMultiDict[K, V]]
     with Growable[(K, V)]
     with Shrinkable[(K, V)] {
 
+  override def knownSize = -1
+
   def sets: collection.SortedMap[K, collection.Set[V]] = elems
 
-  def sortedMultiMapFactory: SortedMapFactory[SortedMultiDict] = SortedMultiDict
-
-  protected[this] def sortedFromIterable[L: Ordering, W](it: collection.Iterable[(L, W)]): SortedMultiDict[L, W] = sortedMultiMapFactory.from(it)
+  override def sortedMultiDictFactory: SortedMapFactory[SortedMultiDict] = SortedMultiDict
+  override protected def fromSpecific(coll: IterableOnce[(K, V)]): SortedMultiDict[K, V] = sortedMultiDictFactory.from(coll)
+  override protected def newSpecificBuilder: mutable.Builder[(K, V), SortedMultiDict[K, V]] = sortedMultiDictFactory.newBuilder[K, V]
+  override def empty: SortedMultiDict[K, V] = sortedMultiDictFactory.empty
+  override def withFilter(p: ((K, V)) => Boolean): SortedMultiDictOps.WithFilter[K, V, Iterable, collection.MultiDict, SortedMultiDict] =
+    new SortedMultiDictOps.WithFilter[K, V, Iterable, collection.MultiDict, SortedMultiDict](this, p)
 
   def rangeImpl(from: Option[K], until: Option[K]): SortedMultiDict[K, V] =
     new SortedMultiDict(elems.rangeImpl(from, until))
@@ -39,6 +44,7 @@ class SortedMultiDict[K, V] private (elems: SortedMap[K, Set[V]])(implicit val o
       case Some(vs) =>
         vs -= v
         if (vs.nonEmpty) Some(vs) else None
+      case None => None
     }
     this
   }

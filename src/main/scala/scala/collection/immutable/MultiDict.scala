@@ -2,7 +2,6 @@ package scala
 package collection
 package immutable
 
-import collection.decorators._
 import scala.collection.mutable.{Builder, ImmutableBuilder}
 
 /**
@@ -18,7 +17,12 @@ class MultiDict[K, V] private (elems: Map[K, Set[V]])
 
   def sets: Map[K, Set[V]] = elems
 
-  override def multiMapFactory: MapFactory[MultiDict] = MultiDict
+  override def multiDictFactory: MapFactory[MultiDict] = MultiDict
+  override protected def fromSpecific(coll: IterableOnce[(K, V)]): MultiDict[K, V] = multiDictFactory.from(coll)
+  override protected def newSpecificBuilder: mutable.Builder[(K, V), MultiDict[K, V]] = multiDictFactory.newBuilder[K, V]
+  override def empty: MultiDict[K, V] = multiDictFactory.empty
+  override def withFilter(p: ((K, V)) => Boolean): MultiDictOps.WithFilter[K, V, Iterable, MultiDict] =
+    new MultiDictOps.WithFilter(this, p)
 
   /**
     * @return a new multidict that contains all the entries of this multidict
@@ -29,6 +33,7 @@ class MultiDict[K, V] private (elems: Map[K, Set[V]])
       case Some(vs) =>
         val updatedVs = vs - value
         if (updatedVs.nonEmpty) Some(updatedVs) else None
+      case None => None
     })
 
   /** Alias for `remove` */

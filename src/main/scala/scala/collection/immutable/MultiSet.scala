@@ -4,8 +4,6 @@ package immutable
 
 import scala.collection.mutable.{Builder, ImmutableBuilder}
 
-import scala.collection.decorators.ImmutableMapDecorator
-
 /**
   * An immutable multiset
   * @tparam A the element type of the collection
@@ -16,6 +14,10 @@ trait MultiSet[A]
     with MultiSetOps[A, MultiSet, MultiSet[A]] {
 
   override def iterableFactory: IterableFactory[MultiSet] = MultiSet
+  override protected def fromSpecific(coll: IterableOnce[A]): MultiSet[A] = iterableFactory.from(coll)
+  override protected def newSpecificBuilder: mutable.Builder[A, MultiSet[A]] = iterableFactory.newBuilder
+  override def empty: MultiSet[A] = iterableFactory.empty
+
 }
 
 trait MultiSetOps[A, +CC[X] <: MultiSet[X], +C <: MultiSet[A]] extends collection.MultiSetOps[A, CC, C] {
@@ -67,6 +69,7 @@ class MultiSetImpl[A] private[immutable] (elems: Map[A, Int]) extends MultiSet[A
   def excl(elem: A): MultiSet[A] =
     new MultiSetImpl(elems.updatedWith(elem) {
       case Some(n) => if (n > 1) Some(n - 1) else None
+      case None => None
     })
 
 }
