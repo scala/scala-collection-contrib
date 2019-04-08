@@ -15,9 +15,12 @@ class SortedMultiDict[K, V] private (elems: SortedMap[K, Set[V]])(implicit val o
     with collection.SortedMultiDictOps[K, V, SortedMultiDict, SortedMultiDict[K, V]]
     with collection.IterableOps[(K, V), Iterable, SortedMultiDict[K, V]] {
 
-  def sortedMultiMapFactory: SortedMapFactory[SortedMultiDict] = SortedMultiDict
-
-  protected[this] def sortedFromIterable[L: Ordering, W](it: collection.Iterable[(L, W)]): SortedMultiDict[L, W] = sortedMultiMapFactory.from(it)
+  override def sortedMultiDictFactory: SortedMapFactory[SortedMultiDict] = SortedMultiDict
+  override protected def fromSpecific(coll: IterableOnce[(K, V)]): SortedMultiDict[K, V] = sortedMultiDictFactory.from(coll)
+  override protected def newSpecificBuilder: mutable.Builder[(K, V), SortedMultiDict[K, V]] = sortedMultiDictFactory.newBuilder[K, V]
+  override def empty: SortedMultiDict[K, V] = sortedMultiDictFactory.empty
+  override def withFilter(p: ((K, V)) => Boolean): SortedMultiDictOps.WithFilter[K, V, Iterable, collection.MultiDict, SortedMultiDict] =
+    new SortedMultiDictOps.WithFilter[K, V, Iterable, collection.MultiDict, SortedMultiDict](this, p)
 
   def sets: SortedMap[K, Set[V]] = elems
 
@@ -32,7 +35,7 @@ class SortedMultiDict[K, V] private (elems: SortedMap[K, Set[V]])(implicit val o
     new SortedMultiDict(elems.updatedWith(key) {
       case None     => Some(Set(value))
       case Some(vs) => Some(vs + value)
-    }.asInstanceOf[SortedMap[K, Set[V]]] /* temporary */)
+    })
 
   /** Alias for `add` */
   @`inline` final def + (kv: (K, V)): SortedMultiDict[K, V] = add(kv._1, kv._2)
@@ -47,7 +50,7 @@ class SortedMultiDict[K, V] private (elems: SortedMap[K, Set[V]])(implicit val o
         val updatedVs = vs - value
         if (updatedVs.nonEmpty) Some(updatedVs) else None
       case None => None
-    }.asInstanceOf[SortedMap[K, Set[V]]] /* temporary */)
+    })
 
   /** Alias for `remove` */
   @`inline` final def - (kv: (K, V)): SortedMultiDict[K, V] = remove(kv._1, kv._2)

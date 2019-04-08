@@ -18,6 +18,11 @@ class SortedMultiSet[A] private (elems: SortedMap[A, Int])(implicit val ordering
   def occurrences: collection.SortedMap[A, Int] = elems
 
   override def sortedIterableFactory: SortedIterableFactory[SortedMultiSet] = SortedMultiSet
+  override protected def fromSpecific(coll: IterableOnce[A]): SortedMultiSet[A] = sortedIterableFactory.from(coll)
+  override protected def newSpecificBuilder: mutable.Builder[A, SortedMultiSet[A]] = sortedIterableFactory.newBuilder[A]
+  override def empty: SortedMultiSet[A] = sortedIterableFactory.empty
+  override def withFilter(p: A => Boolean): SortedMultiSetOps.WithFilter[A, MultiSet, SortedMultiSet] =
+    new SortedMultiSetOps.WithFilter(this, p)
 
   def rangeImpl(from: Option[A], until: Option[A]): SortedMultiSet[A] =
     new SortedMultiSet(elems.rangeImpl(from, until))

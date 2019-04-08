@@ -1,8 +1,6 @@
 // TODO Make it a cross project including Scala.js
 
-resolvers += "scala-integration" at "https://scala-ci.typesafe.com/artifactory/scala-integration/"
-
-scalaVersion := "2.13.0-pre-370f5c8"
+scalaVersion := "2.13.0-RC1"
 
 organization := "org.scala-lang"
 

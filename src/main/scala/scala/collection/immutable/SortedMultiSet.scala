@@ -17,8 +17,12 @@ class SortedMultiSet[A] private (elems: SortedMap[A, Int])(implicit val ordering
 
   def occurrences: SortedMap[A, Int] = elems
 
-  override def iterableFactory: IterableFactory[MultiSet] = MultiSet
   override def sortedIterableFactory: SortedIterableFactory[SortedMultiSet] = SortedMultiSet
+  override protected def fromSpecific(coll: IterableOnce[A]): SortedMultiSet[A] = sortedIterableFactory.from(coll)
+  override protected def newSpecificBuilder: mutable.Builder[A, SortedMultiSet[A]] = sortedIterableFactory.newBuilder[A]
+  override def empty: SortedMultiSet[A] = sortedIterableFactory.empty
+  override def withFilter(p: A => Boolean): SortedMultiSetOps.WithFilter[A, MultiSet, SortedMultiSet] =
+    new SortedMultiSetOps.WithFilter(this, p)
 
   def rangeImpl(from: Option[A], until: Option[A]): SortedMultiSet[A] =
     new SortedMultiSet(elems.rangeImpl(from, until))
@@ -32,7 +36,7 @@ class SortedMultiSet[A] private (elems: SortedMap[A, Int])(implicit val ordering
     new SortedMultiSet(elems.updatedWith(elem) {
       case None    => Some(1)
       case Some(n) => Some(n + 1)
-    }.asInstanceOf[SortedMap[A, Int]] /* temporary */)
+    })
 
   /**
     * @return an immutable sorted multiset containing all the elements of
@@ -44,7 +48,7 @@ class SortedMultiSet[A] private (elems: SortedMap[A, Int])(implicit val ordering
     new SortedMultiSet(elems.updatedWith(elem) {
       case Some(n) => if (n > 1) Some(n - 1) else None
       case None => None
-    }.asInstanceOf[SortedMap[A, Int]] /* temporary */)
+    })
 }
 
 object SortedMultiSet extends SortedIterableFactory[SortedMultiSet] {

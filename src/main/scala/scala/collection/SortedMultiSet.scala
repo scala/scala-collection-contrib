@@ -12,24 +12,22 @@ trait SortedMultiSet[A]
 
   def unsorted: MultiSet[A] = this
 
-  override protected[this] def fromSpecific(coll: IterableOnce[A]): SortedIterableCC[A] = sortedIterableFactory.from(coll)
-  override protected[this] def newSpecificBuilder: mutable.Builder[A, SortedIterableCC[A]] = sortedIterableFactory.newBuilder[A]
+  def sortedIterableFactory: SortedIterableFactory[SortedMultiSet] = SortedMultiSet
+  override protected def fromSpecific(coll: IterableOnce[A]): SortedMultiSet[A] = sortedIterableFactory.from(coll)
+  override protected def newSpecificBuilder: mutable.Builder[A, SortedMultiSet[A]] = sortedIterableFactory.newBuilder
+  override def empty: SortedMultiSet[A] = sortedIterableFactory.empty
+  override def withFilter(p: A => Boolean): SortedMultiSetOps.WithFilter[A, MultiSet, SortedMultiSet] = new SortedMultiSetOps.WithFilter(this, p)
 
-  protected[this] def sortedFromIterable[B : Ordering](it: scala.collection.Iterable[B]): SortedIterableCC[B] = sortedIterableFactory.from(it)
-
-  def sortedIterableFactory: SortedIterableFactory[SortedIterableCC] = SortedMultiSet
 }
 
 trait SortedMultiSetOps[A, +CC[X] <: MultiSet[X], +C <: MultiSet[A]]
   extends MultiSetOps[A, MultiSet, C]
     with SortedOps[A, C] {
 
-  protected[this] type SortedIterableCC[X] = CC[X] @uncheckedVariance
+  def sortedIterableFactory: SortedIterableFactory[CC]
 
-  def sortedIterableFactory: SortedIterableFactory[SortedIterableCC]
-
-  protected[this] def sortedFromIterable[B : Ordering](it: Iterable[B]): SortedIterableCC[B]
-  protected[this] def sortedFromOccurrences[B : Ordering](it: Iterable[(B, Int)]): CC[B] =
+  protected def sortedFromIterable[B : Ordering](it: Iterable[B]): CC[B] = sortedIterableFactory.from(it)
+  protected def sortedFromOccurrences[B : Ordering](it: Iterable[(B, Int)]): CC[B] =
     sortedFromIterable(it.view.flatMap { case (b, n) => new View.Fill(n)(b) })
 
   /** `this` sorted multiset upcasted to an unsorted multiset */
@@ -61,9 +59,6 @@ trait SortedMultiSetOps[A, +CC[X] <: MultiSet[X], +C <: MultiSet[A]]
     else
       rangeUntil(next)
   }
-
-  override def withFilter(p: A => Boolean): SortedMultiSetOps.WithFilter[A, IterableCC, CC] =
-    new SortedMultiSetOps.WithFilter(this, p)
 
   /** Builds a new sorted multiset by applying a function to all elements of this sorted multiset.
     *

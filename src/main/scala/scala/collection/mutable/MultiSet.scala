@@ -12,12 +12,14 @@ trait MultiSet[A]
     with Shrinkable [A] {
 
   override def iterableFactory: IterableFactory[MultiSet] = MultiSet
+  override protected def fromSpecific(coll: IterableOnce[A]): MultiSet[A] = iterableFactory.from(coll)
+  override protected def newSpecificBuilder: mutable.Builder[A, MultiSet[A]] = iterableFactory.newBuilder
+  override def empty: MultiSet[A] = iterableFactory.empty
+
   override def knownSize = super[Growable].knownSize
 }
 
 class MultiSetImpl[A] private[mutable] (val elems: Map[A, Int]) extends MultiSet[A] {
-
-  override def knownSize = elems.knownSize
 
   def occurrences: collection.Map[A, Int] = elems
 

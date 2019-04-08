@@ -14,6 +14,10 @@ trait MultiSet[A]
     with MultiSetOps[A, MultiSet, MultiSet[A]] {
 
   override def iterableFactory: IterableFactory[MultiSet] = MultiSet
+  override protected def fromSpecific(coll: IterableOnce[A]): MultiSet[A] = iterableFactory.from(coll)
+  override protected def newSpecificBuilder: mutable.Builder[A, MultiSet[A]] = iterableFactory.newBuilder
+  override def empty: MultiSet[A] = iterableFactory.empty
+
 }
 
 trait MultiSetOps[A, +CC[X] <: MultiSet[X], +C <: MultiSet[A]] extends collection.MultiSetOps[A, CC, C] {
@@ -44,7 +48,6 @@ class MultiSetImpl[A] private[immutable] (elems: Map[A, Int]) extends MultiSet[A
   def occurrences: Map[A, Int] = elems
 
   override def iterableFactory: IterableFactory[MultiSet] = MultiSet
-  override def knownSize = elems.knownSize
 
   /**
     * @return an immutable multiset containing all the elements of this multiset

@@ -12,6 +12,11 @@ trait MultiSet[A]
     with MultiSetOps[A, MultiSet, MultiSet[A]]
     with Equals {
 
+  override def iterableFactory: IterableFactory[MultiSet] = MultiSet
+  override protected def fromSpecific(coll: IterableOnce[A]): MultiSet[A] = iterableFactory.from(coll)
+  override protected def newSpecificBuilder: mutable.Builder[A, MultiSet[A]] = iterableFactory.newBuilder
+  override def empty: MultiSet[A] = iterableFactory.empty
+
   def canEqual(that: Any): Boolean = true
 
   override def equals(o: Any): Boolean = o match {
