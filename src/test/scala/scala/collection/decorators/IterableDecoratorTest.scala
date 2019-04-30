@@ -17,6 +17,24 @@ class IterableDecoratorTest {
       Assert.assertEquals(10, List[Int]().foldSomeLeft(10)((x, y) => Some(x + y)))
     }
 
+  @Test
+  def lazyFoldLeftIsStackSafe(): Unit = {
+    val bigList = List.range(1, 50000)
+    def sum(as: Iterable[Int]): Int =
+      as.lazyFoldLeft(0)(_ + _)
+
+    Assert.assertEquals(sum(bigList), 1249975000)
+  }
+
+  @Test
+  def lazyFoldLeftIsLazy(): Unit = {
+    val nats = LazyList.from(0)
+    def exists[A](as: Iterable[A])(f: A => Boolean): Boolean =
+      as.lazyFoldLeft(false)(_ || f(_))
+    
+    Assert.assertTrue(exists(nats)(_ > 100000))
+  }
+
   @Test def lazyFoldRightIsLazy(): Unit = {
     val xs = LazyList.from(0)
     def chooseOne(x: Int): Either[Int, Int => Int]= if (x < (1 << 16)) Right(identity) else Left(x)
