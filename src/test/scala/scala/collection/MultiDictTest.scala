@@ -6,7 +6,7 @@ import scala.collection.immutable.List
 import org.junit.{Assert, Test}
 
 @RunWith(classOf[JUnit4])
-class MultiMapTest {
+class MultiDictTest {
 
   @Test
   def equality(): Unit = {
@@ -71,6 +71,52 @@ class MultiMapTest {
       } yield (k, v)
     val filteredT: MultiDict[String, Int] = filtered
     Assert.assertEquals(Seq.empty, filtered.toSeq)
+  }
+  @Test
+  def testToString(): Unit = {
+
+    val prefix = "MultiDict("
+    val suffix = ")"
+
+    def run(ms: MultiDict[Int, Int]): Unit = {
+      val actual = ms.toString
+      assert(actual.startsWith(prefix), s"`$actual` does not start with `$prefix`")
+      assert(actual.endsWith(suffix), s"`$actual` does not end with `$suffix`")
+
+      // The order of elements in the multiset are not defined, so this test should be robust to order changes
+
+      val expected =
+        actual
+          .stripPrefix(prefix)
+          .stripSuffix(suffix)
+          .split(",")
+          .iterator
+          .flatMap { s =>
+            if (s.isEmpty) None
+            else {
+              val Array(keyString, valueString) = s.split("->")
+              Some(keyString.trim.toInt -> valueString.trim.toInt)
+            }
+          }
+          .to(MultiDict)
+      Assert.assertEquals(ms, expected)
+    }
+
+    def runForFactory(factory: MapFactory[MultiDict]): Unit = {
+      Assert.assertEquals(factory().toString, s"$prefix$suffix")
+      Assert.assertEquals(factory(1 -> 1).toString, s"${prefix}1 -> 1${suffix}")
+
+      run(factory())
+      run(factory(1 -> 1))
+      run(factory(1234 -> 2))
+      run(factory(1 -> 5,2 -> 6,3 -> 7))
+      run(factory(1 -> 1,1 -> 2,1 -> 3,2 -> 1,3 -> 3))
+      run(factory(1 -> 1,1 -> 2,1 -> 3,2 -> 4,2 -> 5,2 -> 6,2 -> 7,3 -> 8))
+    }
+
+    runForFactory(MultiDict)
+    runForFactory(mutable.MultiDict)
+    runForFactory(immutable.MultiDict)
   }
 
 }
