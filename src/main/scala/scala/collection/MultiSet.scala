@@ -12,6 +12,8 @@ trait MultiSet[A]
     with MultiSetOps[A, MultiSet, MultiSet[A]]
     with Equals {
 
+  override protected[this] def className: String = "MultiSet"
+
   override def iterableFactory: IterableFactory[MultiSet] = MultiSet
   override protected def fromSpecific(coll: IterableOnce[A]): MultiSet[A] = iterableFactory.from(coll)
   override protected def newSpecificBuilder: mutable.Builder[A, MultiSet[A]] = iterableFactory.newBuilder

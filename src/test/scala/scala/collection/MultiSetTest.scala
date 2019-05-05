@@ -46,4 +46,43 @@ class MultiSetTest {
     )
   }
 
+  @Test
+  def testToString(): Unit = {
+
+    def run(ms: MultiSet[Int]): Unit = {
+      val actual = ms.toString
+      assert(actual.startsWith("MultiSet("), s"`$actual` does not start with `MultiSet(`")
+      assert(actual.endsWith(")"), s"`$actual` does not end with `)`")
+
+      // The order of elements in the multiset are not defined, so this test should be robust to order changes
+      Assert.assertEquals(ms,
+        actual
+          .stripPrefix("MultiSet(")
+          .stripSuffix(")")
+          .split(",")
+          .iterator
+          .flatMap (_.trim match {
+            case "" => None
+            case s => Some(s.toInt)
+          })
+          .to(MultiSet))
+    }
+
+    def runForFactory(factory: IterableFactory[MultiSet]): Unit = {
+      Assert.assertEquals(factory().toString, "MultiSet()")
+      Assert.assertEquals(factory(1).toString, "MultiSet(1)")
+
+      run(factory())
+      run(factory(1))
+      run(factory(1234))
+      run(factory(1,2,3))
+      run(factory(1,1,1,2,3))
+      run(factory(1,1,1,2,2,2,2,3))
+    }
+
+    runForFactory(MultiSet)
+    runForFactory(mutable.MultiSet)
+    runForFactory(immutable.MultiSet)
+  }
+
 }

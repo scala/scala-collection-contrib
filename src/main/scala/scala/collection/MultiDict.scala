@@ -13,6 +13,8 @@ trait MultiDict[K, V]
     with MultiDictOps[K, V, MultiDict, MultiDict[K, V]]
     with Equals {
 
+  override protected[this] def className: String = "MultiDict"
+
   def multiDictFactory: MapFactory[MultiDict] = MultiDict
   override protected def fromSpecific(coll: IterableOnce[(K, V)]): MultiDict[K, V] = multiDictFactory.from(coll)
   override protected def newSpecificBuilder: mutable.Builder[(K, V), MultiDict[K, V]] = multiDictFactory.newBuilder
@@ -196,6 +198,8 @@ trait MultiDictOps[K, V, +CC[X, Y] <: MultiDict[X, Y], +C <: MultiDict[K, V]]
   def filterSets(p: ((K, Set[V])) => Boolean): C =
     fromSpecificSets(new View.Filter(sets, p, isFlipped = false))
 
+  override def addString(sb: StringBuilder, start: String, sep: String, end: String): StringBuilder =
+    iterator.map { case (k, v) => s"$k -> $v" }.addString(sb, start, sep, end)
 }
 
 object MultiDictOps {
