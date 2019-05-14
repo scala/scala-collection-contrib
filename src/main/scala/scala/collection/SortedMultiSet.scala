@@ -13,9 +13,9 @@ trait SortedMultiSet[A]
   def unsorted: MultiSet[A] = this
 
   def sortedIterableFactory: SortedIterableFactory[SortedMultiSet] = SortedMultiSet
-  override protected def fromSpecific(coll: IterableOnce[A]): SortedMultiSet[A] = sortedIterableFactory.from(coll)
-  override protected def newSpecificBuilder: mutable.Builder[A, SortedMultiSet[A]] = sortedIterableFactory.newBuilder
-  override def empty: SortedMultiSet[A] = sortedIterableFactory.empty
+  override protected def fromSpecific(coll: IterableOnce[A]): SortedMultiSet[A] = sortedIterableFactory.from(coll)(ordering)
+  override protected def newSpecificBuilder: mutable.Builder[A, SortedMultiSet[A]] = sortedIterableFactory.newBuilder(ordering)
+  override def empty: SortedMultiSet[A] = sortedIterableFactory.empty(ordering)
   override def withFilter(p: A => Boolean): SortedMultiSetOps.WithFilter[A, MultiSet, SortedMultiSet] = new SortedMultiSetOps.WithFilter(this, p)
 
 }
@@ -118,7 +118,7 @@ trait SortedMultiSetOps[A, +CC[X] <: MultiSet[X], +C <: MultiSet[A]]
     *         is the minimum of the lengths of `this` and `that`
     */
   def zip[B](that: Iterable[B])(implicit ev: Ordering[B]): CC[(A @uncheckedVariance, B)] = // sound bcs of VarianceNote
-    sortedFromIterable(new View.Zip(toIterable, that))
+    sortedFromIterable(new View.Zip(toIterable, that))(Ordering.Tuple2(ordering, implicitly))
 
   /**
     * @return a new collection resulting from applying the given partial
@@ -147,7 +147,7 @@ trait SortedMultiSetOps[A, +CC[X] <: MultiSet[X], +C <: MultiSet[A]]
   // --- Override return type of methods that returned an unsorted MultiSet
 
   override def zipWithIndex: CC[(A, Int)] =
-    sortedFromIterable(new View.ZipWithIndex(toIterable))
+    sortedFromIterable(new View.ZipWithIndex(toIterable))(Ordering.Tuple2(ordering, implicitly))
 
 }
 

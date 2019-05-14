@@ -12,9 +12,9 @@ trait SortedMultiDict[K, V]
   def unsorted: MultiDict[K, V] = this
 
   def sortedMultiDictFactory: SortedMapFactory[SortedMultiDict] = SortedMultiDict
-  override protected def fromSpecific(coll: IterableOnce[(K, V)]): SortedMultiDict[K, V] = sortedMultiDictFactory.from(coll)
-  override protected def newSpecificBuilder: mutable.Builder[(K, V), SortedMultiDict[K, V]] = sortedMultiDictFactory.newBuilder
-  override def empty: SortedMultiDict[K, V] = sortedMultiDictFactory.empty
+  override protected def fromSpecific(coll: IterableOnce[(K, V)]): SortedMultiDict[K, V] = sortedMultiDictFactory.from(coll)(ordering)
+  override protected def newSpecificBuilder: mutable.Builder[(K, V), SortedMultiDict[K, V]] = sortedMultiDictFactory.newBuilder(ordering)
+  override def empty: SortedMultiDict[K, V] = sortedMultiDictFactory.empty(ordering)
   override def withFilter(p: ((K, V)) => Boolean): SortedMultiDictOps.WithFilter[K, V, Iterable, MultiDict, SortedMultiDict] = new SortedMultiDictOps.WithFilter(this, p)
 
 }
