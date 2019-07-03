@@ -109,7 +109,7 @@ class MapDecorator[C, M <: IsMap[C]](coll: C)(implicit val map: M) {
   def leftOuterJoin[W, That](other: Map[map.K, W])(implicit bf: BuildFrom[C, (map.K, (map.V, Option[W])), That]): That = {
     val b = bf.newBuilder(coll)
     for ((k, v) <- map(coll)) {
-      b += k -> (v, other.get(k))
+      b += k -> ((v, other.get(k)))
     }
     b.result()
   }
@@ -128,7 +128,7 @@ class MapDecorator[C, M <: IsMap[C]](coll: C)(implicit val map: M) {
   def rightOuterJoin[W, That](other: Map[map.K, W])(implicit bf: BuildFrom[C, (map.K, (Option[map.V], W)), That]): That = {
     val b = bf.newBuilder(coll)
     for ((k, w) <- other) {
-      b += k -> (map(coll).get(k), w)
+      b += k -> ((map(coll).get(k), w))
     }
     b.result()
   }
