@@ -48,7 +48,7 @@ class SeqDecorator[C, S <: IsSeq[C]](coll: C)(implicit val seq: S) {
     *
     * @param elem        the element to replace
     * @param replacement the replacement element
-    * @tparam B          the element type of the returned $coll.
+    * @tparam B          the element type of the returned collection.
     * @return            a new sequence consisting of all elements of this sequence
     *                    except that all occurrences of `elem` are replaced by
     *                    `replacement`
