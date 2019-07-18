@@ -1,15 +1,15 @@
-# Scala Collection Contrib
+# scala-collection-contrib
 
-This module provides extra features to the Scala standard collections.
+This module provides various additions to the Scala 2.13 standard collections.
 
-## New Collection Types
+## New collection types
 
 - `MultiSet` (both mutable and immutable)
 - `SortedMultiSet` (both mutable and immutable)
 - `MultiDict` (both mutable and immutable)
 - `SortedMultiDict` (both mutable and immutable)
 
-## New Operations
+## New operations
 
 The new operations are provided via an implicit enrichment. You need to add the following
 import to make them available:
@@ -27,3 +27,14 @@ The following operations are provided:
     - `zipByKey` / `join` / `zipByKeyWith`
     - `mergeByKey` / `fullOuterJoin` / `mergeByKeyWith` / `leftOuterJoin` / `rightOuterJoin`
 
+## Maintenance status
+
+This module is community-maintained.  If you are interested in
+participating, please jump right in on issues and pull requests.
+
+## Releasing
+
+As with other Scala standard modules, build and release infrastructure
+is provided by the
+[sbt-scala-module](https://github.com/scala/sbt-scala-module/) sbt
+plugin.
