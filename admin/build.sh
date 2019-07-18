@@ -39,8 +39,8 @@ if [[ "$TRAVIS_TAG" =~ $tagPat ]]; then
     cp admin/publish-settings.sbt .
 
     # Copied from the output of genKeyPair.sh
-    K=$encrypted_6b8d67feaab7_key
-    IV=$encrypted_6b8d67feaab7_iv
+    K=$encrypted_19496a14fffe_key
+    IV=$encrypted_19496a14fffe_iv
     openssl aes-256-cbc -K $K -iv $IV -in admin/secring.asc.enc -out admin/secring.asc -d
   fi
 fi
