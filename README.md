@@ -1,5 +1,8 @@
 # scala-collection-contrib
 
+[<img src="https://travis-ci.org/scala/scala-collection-contrib.svg?branch=master"/>](https://travis-ci.org/scala/scala-collection-contrib)
+[<img src="https://img.shields.io/maven-central/v/org.scala-lang.modules/scala-collection-contrib_2.13.svg?label=scala+2.13"/>](http://search.maven.org/#search%7Cga%7C1%7Cg%3Aorg.scala-lang.modules%20a%3Ascala-collection-contrib_2.13)
+
 This module provides various additions to the Scala 2.13 standard collections.
 
 ## Usage
