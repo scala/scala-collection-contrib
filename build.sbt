@@ -13,6 +13,8 @@ scalacOptions in (Compile, doc) ++= Seq("-implicits", "-groups")
 testOptions += Tests.Argument(TestFrameworks.JUnit, "-q", "-v", "-s", "-a")
 parallelExecution in Test := false  // why?
 
+mimaPreviousVersion := Some("0.1.0")
+
 homepage := Some(url("https://github.com/scala/scala-collection-contrib"))
 licenses := Seq("Apache-2.0" -> url("https://www.apache.org/licenses/LICENSE-2.0"))
 
