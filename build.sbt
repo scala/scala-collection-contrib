@@ -3,7 +3,7 @@ import ScalaModulePlugin._
 scalaModuleSettings
 
 name := "scala-collection-contrib"
-version := "0.1.0-SNAPSHOT"
+version := "0.1.1-SNAPSHOT"
 
 scalaVersionsByJvm in ThisBuild := {
   val v213 = "2.13.0"
