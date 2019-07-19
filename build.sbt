@@ -5,13 +5,7 @@ scalaModuleSettings
 name := "scala-collection-contrib"
 version := "0.1.1-SNAPSHOT"
 
-scalaVersionsByJvm in ThisBuild := {
-  val v213 = "2.13.0"
-  Map(
-    8 -> List(v213 -> true),
-    11 -> List(v213 -> false),
-    12 -> List(v213 -> false))
-}
+crossScalaVersions in ThisBuild := Seq("2.13.0")
 
 scalacOptions ++= Seq("-opt-warnings", "-language:higherKinds", "-deprecation", "-feature", "-Xfatal-warnings")
 scalacOptions in (Compile, doc) ++= Seq("-implicits", "-groups")
