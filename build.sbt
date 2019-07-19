@@ -1,6 +1,7 @@
 import ScalaModulePlugin._
 
 scalaModuleSettings
+scalaModuleSettingsJVM
 
 name := "scala-collection-contrib"
 version := "0.1.1-SNAPSHOT"
