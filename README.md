@@ -2,6 +2,14 @@
 
 This module provides various additions to the Scala 2.13 standard collections.
 
+## Usage
+
+If you're using sbt, you can add the dependency as follows:
+
+```
+libraryDependencies += "org.scala-lang.modules" %% "scala-collection-contrib" % "0.1.0"
+```
+
 ## New collection types
 
 - `MultiSet` (both mutable and immutable)
