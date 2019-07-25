@@ -1,14 +1,7 @@
 language: scala
 
-jdk:
-  - openjdk8
-  - openjdk11
-
 scala:
   - 2.13.0
-
-script:
-  - admin/build.sh
 
 env:
   global:
@@ -18,6 +11,25 @@ env:
     - secure: "Uc+tOT5E5FEQwLx4ZXZO1Oum1HAhMbvCWpKpkReqdsyb+xBdMbJkt43o8jvM/2WNVMcijEku87o5yWWa/fRDfqBg4GCuwnjUYu/3S0Lyxso8Mgmlcn6khmi09inOvAMVpCdBjvr+krJG1kXgxO62qA3IM0FU9z06Kcngz8F4YhnSGBv2HkOI/+9UHjQeex7tSUSFZi8itnEIN+gK4oWLVItyo0MbH4539BeJyoq/+e70xNxolLFHpVhruBQssg8MS60C5rajo7FXo1BODv+SIR+d1UZ6z8sl2iFU2psijej39nYHzmbxuM9P5Twozs38Rq7g4CM5aFLebna8VZoO6zZtM4PIAyiExkWWILQknrZEhHSded6l73GDeX+eoIigvYNxxAgXMh+MJll1i+XEySLjku8NvarQJ8c09x4S/Rjz1CBEfvlAhM+f117PqVsB87JBnsfE7CABfusJ2wqBpFf9pq9DA3E62XSEniWTIzow37YSR7opRv6wvHzuGrO6OeadIN1P2hb/FDiXDBnqG4xtGUFx81FM0dl9jV97kYiXoaqTwjT0j3d1MBGiN7IzeHxLbczMWA9mvvXtIeOxa73mph3grKKXiRqf/U+455oEIbCObEudjI7zXbjhXGeoVb+OqU7t5Beo+0Lg3H0hyntCsewops/h52lTmgsg5Hw="
     # SONA_PASS
     - secure: "ggXFZBlzV5ek/rBaE9lrEZlAIfUrv4XDJ4OrP8daMrJxmwkXtoSbcB3z4VgqqWKzAzW89CcU1IiojzDbe/het3xEX4qxdz5Wt05/E+WOgbek528kelwMxq12XRe6xaCVfG+y8OISPgq1q3vKoO/xYGVbK3D6hSD+cjojEXyPpjAfrVSUof06aNPFPQeLX9exgu9zrxkJJm01PbTh19vQk4Ojc++oEmpF7HLD1CF1m7AlW0U2Rba+syivpj9Ray3Z9vu0TnFL06r4TiwZruwcXTLrWUqumFI0r5mhaY6SNH7bqttu+3RPIOdkUGxIeGlkDi3xopt7r2aEkhOKvjRXapW0e/CWmUo1J+NnlIumxrldi4n0iiJGVEvY4Krx/HGZe0wCVTh4vDNOllTGdFmkkxN6WoaHALgj3QNM3XLjvvUu3VcT+QNtsVIvgUDesrtos8zCKczzdhL/d4BMiIg7SFfA33S3vx8BeczLBqddrx+yLSPzfheKrHW7g76EAEyN26vE2/2/GRlMOlG8Lmu8rXBfIPsK9T/ztfE1CxaTW5EsMSrxO2+O/bvAa6DY0R79KkHf7LDI+azzP2NwYx8anM9WlMTp4EbawI/KGZRilWYtJ3Q3y5EQERsrP71W35dKqiBFMPdspS+lTS9hGtso08n7cR2MwTbRjoXVRcWfJ/I="
+  matrix:
+    - ADOPTOPENJDK=8
+    - ADOPTOPENJDK=11
+
+before_install:
+  # adding $HOME/.sdkman to cache would create an empty directory, which interferes with the initial installation
+  - "[[ -d $HOME/.sdkman/bin ]] || rm -rf $HOME/.sdkman/"
+  - curl -sL https://get.sdkman.io | bash
+  - echo sdkman_auto_answer=true > "$HOME/.sdkman/etc/config"
+  - source "$HOME/.sdkman/bin/sdkman-init.sh"
+
+install:
+  - sdk install java $(sdk list java | grep -o "$ADOPTOPENJDK\.[0-9\.]*hs-adpt" | head -1)
+  - unset JAVA_HOME
+  - java -Xmx32m -version
+  - javac -J-Xmx32m -version
+
+script:
+  - admin/build.sh
 
 before_cache:
   - find $HOME/.sbt -name "*.lock" | xargs rm
@@ -27,3 +39,4 @@ cache:
   - $HOME/.ivy2/cache
   - $HOME/.sbt/boot
   - $HOME/.sbt/launchers
+  - $HOME/.sdkman
