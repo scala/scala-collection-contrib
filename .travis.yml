@@ -12,8 +12,11 @@ env:
     # SONA_PASS
     - secure: "ggXFZBlzV5ek/rBaE9lrEZlAIfUrv4XDJ4OrP8daMrJxmwkXtoSbcB3z4VgqqWKzAzW89CcU1IiojzDbe/het3xEX4qxdz5Wt05/E+WOgbek528kelwMxq12XRe6xaCVfG+y8OISPgq1q3vKoO/xYGVbK3D6hSD+cjojEXyPpjAfrVSUof06aNPFPQeLX9exgu9zrxkJJm01PbTh19vQk4Ojc++oEmpF7HLD1CF1m7AlW0U2Rba+syivpj9Ray3Z9vu0TnFL06r4TiwZruwcXTLrWUqumFI0r5mhaY6SNH7bqttu+3RPIOdkUGxIeGlkDi3xopt7r2aEkhOKvjRXapW0e/CWmUo1J+NnlIumxrldi4n0iiJGVEvY4Krx/HGZe0wCVTh4vDNOllTGdFmkkxN6WoaHALgj3QNM3XLjvvUu3VcT+QNtsVIvgUDesrtos8zCKczzdhL/d4BMiIg7SFfA33S3vx8BeczLBqddrx+yLSPzfheKrHW7g76EAEyN26vE2/2/GRlMOlG8Lmu8rXBfIPsK9T/ztfE1CxaTW5EsMSrxO2+O/bvAa6DY0R79KkHf7LDI+azzP2NwYx8anM9WlMTp4EbawI/KGZRilWYtJ3Q3y5EQERsrP71W35dKqiBFMPdspS+lTS9hGtso08n7cR2MwTbRjoXVRcWfJ/I="
   matrix:
-    - ADOPTOPENJDK=8
-    - ADOPTOPENJDK=11
+    # The empty SCALAJS_VERSION will only compile for the JVM
+    - SCALAJS_VERSION=         ADOPTOPENJDK=8
+    - SCALAJS_VERSION=0.6.28   ADOPTOPENJDK=8
+    - SCALAJS_VERSION=1.0.0-M8 ADOPTOPENJDK=8
+    - SCALAJS_VERSION=         ADOPTOPENJDK=11
 
 before_install:
   # adding $HOME/.sdkman to cache would create an empty directory, which interferes with the initial installation
