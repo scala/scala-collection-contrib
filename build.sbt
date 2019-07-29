@@ -3,11 +3,16 @@ import ScalaModulePlugin._
 
 lazy val root = project.in(file("."))
   .aggregate(`scala-collection-contribJS`, `scala-collection-contribJVM`)
-  .settings(disablePublishing)
+  .settings(
+    disablePublishing,
+    // HACK If we don’t add this dependency the tests compilation of the aggregated projects fails
+    libraryDependencies += "junit" % "junit" % "4.12" % Test
+  )
 
-lazy val `scala-collection-contrib`  = crossProject(JVMPlatform, JSPlatform)
+lazy val `scala-collection-contrib` = crossProject(JVMPlatform, JSPlatform)
+  .crossType(CrossType.Pure)
   .withoutSuffixFor(JVMPlatform).in(file("."))
-  .settings(scalaModuleSettings: _*)
+  .settings(scalaModuleSettings)
   .jvmSettings(scalaModuleSettingsJVM)
   .settings(
     name := "scala-collection-contrib",
