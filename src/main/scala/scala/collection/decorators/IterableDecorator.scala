@@ -48,4 +48,28 @@ class IterableDecorator[C, I <: IsIterable[C]](coll: C)(implicit val it: I) {
   def lazyFoldRight[B](z: B)(op: it.A => Either[B, B => B]): B =
     it(coll).iterator.lazyFoldRight(z)(op)
 
+
+  /**
+    * Constructs a collection where consecutive elements are accumulated as
+    * long as the output of f for each element doesn't change.
+    * <pre>
+    * Vector(1,2,2,3,3,3,2,2)
+    * .splitBy(identity)
+    * </pre>
+    * produces
+    * <pre>
+    * Vector(Vector(1),
+    * Vector(2,2),
+    * Vector(3,3,3),
+    * Vector(2,2))
+    * </pre>
+    *
+    * @param f the function to compute a key for an element
+    * @tparam K the type of the computed key
+    * @return a collection of collections of the consecutive elements with the
+    *         same key in the original collection
+    */
+  def splitBy[K, CC1, CC2](f: it.A => K)(implicit bf: BuildFrom[C, it.A, CC1], bff: BuildFrom[C, CC1, CC2]): CC2 = {
+    bff.fromSpecific(coll)(it(coll).iterator.splitBy(f).map(bf.fromSpecific(coll)))
+  }
 }

@@ -2,7 +2,8 @@ package scala.collection
 package decorators
 
 import org.junit.{Assert, Test}
-import scala.collection.immutable.{LazyList, List, Range, Map}
+
+import scala.collection.immutable.{LazyList, List, Map, Range}
 
 class IterableDecoratorTest {
 
@@ -54,4 +55,44 @@ class IterableDecoratorTest {
     Assert.assertEquals(2, result2)
   }
 
+  @Test
+  def splitByShouldHonorEmptyIterator(): Unit = {
+    val split = Vector.empty[Int].splitBy(identity)
+    Assert.assertEquals(Vector.empty, split)
+  }
+
+  @Test
+  def splitByShouldReturnSingleSeqWhenSingleElement(): Unit = {
+    val value = Vector("1")
+    val split = value.splitBy(identity)
+    Assert.assertEquals(Vector(value), split)
+  }
+
+  @Test
+  def splitByShouldReturnSingleSeqWhenAllElHaveTheSameKey(): Unit = {
+    val value = Vector("1", "1", "1")
+    val split = value.splitBy(identity)
+    Assert.assertEquals(Vector(value), split)
+  }
+
+  @Test
+  def splitByShouldReturnVectorOfVectorOrConsecutiveElementsWithTheSameKey(): Unit = {
+    val value = Vector("1", "2", "2", "3", "3", "3", "2", "2")
+    val split: Vector[Vector[String]] = value.splitBy(identity)
+    Assert.assertEquals(Vector(Vector("1"), Vector("2", "2"), Vector("3", "3", "3"), Vector("2", "2")), split)
+  }
+
+  @Test
+  def splitByShouldReturnListOfListOfConsecutiveElementsWithTheSameKey(): Unit = {
+    val value = List("1", "2", "2", "3", "3", "3", "2", "2")
+    val split: List[List[String]] = value.splitBy(identity)
+    Assert.assertEquals(List(List("1"), List("2", "2"), List("3", "3", "3"), List("2", "2")), split)
+  }
+
+  @Test
+  def splitByShouldReturnSetOfSetOfConsecutiveElementsWithTheSameKey(): Unit = {
+    val value = Set("1", "2", "2", "3", "3", "3", "2", "2")
+    val split: Set[Set[String]] = value.splitBy(identity)
+    Assert.assertEquals(Set(Set("1"), Set("2"), Set("3")), split)
+  }
 }
