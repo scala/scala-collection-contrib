@@ -33,7 +33,7 @@ if [[ "$TRAVIS_TAG" =~ $tagPat ]]; then
     currentJvmVer=$(java -version 2>&1 | awk -F '"' '/version/ {print $2}' | sed 's/^1\.//' | sed 's/[^0-9].*//')
     echo "Releasing $tagVer with Scala $TRAVIS_SCALA_VERSION on Java version $currentJvmVer."
 
-    publishTask="publishSigned"
+    publishTask="$MODULE/publishSigned"
 
     cat admin/gpg.sbt >> project/plugins.sbt
     cp admin/publish-settings.sbt .
@@ -45,4 +45,4 @@ if [[ "$TRAVIS_TAG" =~ $tagPat ]]; then
   fi
 fi
 
-sbt "++$TRAVIS_SCALA_VERSION" "$publishVersion" "clean" "test" "publishLocal" "$publishTask"
+sbt "++$TRAVIS_SCALA_VERSION" "$publishVersion" "$MODULE/clean" "$MODULE/test" "$publishTask"
