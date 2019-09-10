@@ -16,7 +16,7 @@ lazy val `scala-collection-contrib` = crossProject(JVMPlatform, JSPlatform)
   .jvmSettings(scalaModuleSettingsJVM)
   .settings(
     name := "scala-collection-contrib",
-    version := "0.1.1-SNAPSHOT",
+    version := "0.2.1-SNAPSHOT",
 
     crossScalaVersions in ThisBuild := Seq("2.13.0"),
 
