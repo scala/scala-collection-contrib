@@ -44,8 +44,13 @@ class BitSetDecorator[+C <: BitSet with BitSetOps[C]](protected val bs: C) {
     val bitOffset = shiftBy & WordMask
     val wordOffset = shiftBy >>> LogWL
 
+    var significantWordCount = bs.nwords
+    while (significantWordCount > 0 && bs.word(significantWordCount - 1) == 0) {
+      significantWordCount -= 1
+    }
+
     if (bitOffset == 0) {
-      val newSize = bs.nwords + wordOffset
+      val newSize = significantWordCount + wordOffset
       require(newSize <= MaxSize)
       val newBits = Array.ofDim[Long](newSize)
       var i = wordOffset
@@ -56,14 +61,14 @@ class BitSetDecorator[+C <: BitSet with BitSetOps[C]](protected val bs: C) {
       newBits
     } else {
       val revBitOffset = WordLength - bitOffset
-      val extraBits = bs.word(bs.nwords - 1) >>> revBitOffset
+      val extraBits = bs.word(significantWordCount - 1) >>> revBitOffset
       val extraWordCount = if (extraBits == 0) 0 else 1
-      val newSize = bs.nwords + wordOffset + extraWordCount
+      val newSize = significantWordCount + wordOffset + extraWordCount
       require(newSize <= MaxSize)
       val newBits = Array.ofDim[Long](newSize)
       var previous = 0L
       var i = 0
-      while (i < bs.nwords) {
+      while (i < significantWordCount) {
         val current = bs.word(i)
         newBits(i + wordOffset) = (previous >>> revBitOffset) | (current << bitOffset)
         previous = current
