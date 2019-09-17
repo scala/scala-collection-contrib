@@ -1,6 +1,6 @@
 scalacOptions ++= Seq("-deprecation", "-feature", "-Xfatal-warnings")
 
-val scalajsVersion = Option(System.getenv("SCALAJS_VERSION")).filter(_.nonEmpty).getOrElse("0.6.28")
+val scalajsVersion = Option(System.getenv("SCALAJS_VERSION")).filter(_.nonEmpty).getOrElse("0.6.29")
 
 addSbtPlugin("org.scala-lang.modules" % "sbt-scala-module" % "2.0.0")
 addSbtPlugin("org.scala-js" % "sbt-scalajs" % scalajsVersion)
