@@ -1,48 +1,35 @@
-import sbtcrossproject.CrossPlugin.autoImport.{ crossProject, CrossType }
-import ScalaModulePlugin._
+import sbtcrossproject.CrossPlugin.autoImport.{CrossType, crossProject}
 
-lazy val root = project.in(file("."))
-  .aggregate(`scala-collection-contribJS`, `scala-collection-contribJVM`)
-  .settings(
-    disablePublishing,
-    // HACK If we don’t add this dependency the tests compilation of the aggregated projects fails
-    libraryDependencies += "junit" % "junit" % "4.12" % Test
-  )
+// With CrossType.Pure, the root project also picks up the sources in `src`
+Compile/sources := Nil
+Test/sources := Nil
 
-lazy val `scala-collection-contrib` = crossProject(JVMPlatform, JSPlatform)
+lazy val collectionContrib = crossProject(JVMPlatform, JSPlatform)
+  .withoutSuffixFor(JVMPlatform)
   .crossType(CrossType.Pure)
-  .withoutSuffixFor(JVMPlatform).in(file("."))
-  .settings(scalaModuleSettings)
-  .jvmSettings(scalaModuleSettingsJVM)
+  .in(file("."))
+  .settings(ScalaModulePlugin.scalaModuleSettings)
+  .jvmSettings(ScalaModulePlugin.scalaModuleSettingsJVM)
   .settings(
     name := "scala-collection-contrib",
-    version := "0.2.1-SNAPSHOT",
-
-    crossScalaVersions in ThisBuild := Seq("2.13.0"),
-
     scalacOptions ++= Seq("-opt-warnings", "-language:higherKinds", "-deprecation", "-feature", "-Xfatal-warnings"),
     scalacOptions in (Compile, doc) ++= Seq("-implicits", "-groups"),
-
     testOptions += Tests.Argument(TestFrameworks.JUnit, "-q", "-v", "-s", "-a"),
     parallelExecution in Test := false,  // why?
-
-    mimaPreviousVersion := Some("0.1.0"),
-
-    homepage := Some(url("https://github.com/scala/scala-collection-contrib")),
-    licenses := Seq("Apache-2.0" -> url("https://www.apache.org/licenses/LICENSE-2.0")),
-
     libraryDependencies ++= Seq(
       "junit"            % "junit"           % "4.12"   % Test,
       "com.novocode"     % "junit-interface" % "0.11"   % Test,
       "org.openjdk.jol"  % "jol-core"        % "0.9"    % Test
     )
   )
+  .jvmSettings(
+    scalaModuleMimaPreviousVersion := Some("0.1.0"), // why only in jvmSettings?
+    // TODO: osgi settings; not trivial because of split packages.
+    // See https://github.com/scala/scala-collection-compat/pull/226
+    // OsgiKeys.exportPackage := Seq(s"scala.collection.*;version=${version.value}"),
+  )
   .jsConfigure(_.enablePlugins(ScalaJSJUnitPlugin))
   .jsSettings(
-    mimaPreviousVersion := None,
     // Scala.js cannot run forked tests
     fork in Test := false
   )
-
-lazy val `scala-collection-contribJVM` = `scala-collection-contrib`.jvm
-lazy val `scala-collection-contribJS` = `scala-collection-contrib`.js
