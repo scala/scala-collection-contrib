@@ -8,7 +8,7 @@ class BitSetDecorator[+C <: BitSet with BitSetOps[C]](protected val bs: C) {
   import BitSetOps._
 
   /**
-    * Bitwise left shift of this BitSet by given the shift distance.
+    * Bitwise left shift of this BitSet by the given shift distance.
     * The shift distance may be negative, in which case this method performs a right shift.
     * @param shiftBy shift distance, in bits
     * @return a new BitSet whose value is a bitwise shift left of this BitSet by given shift distance (`shiftBy`)
