@@ -20,4 +20,7 @@ package object decorators {
   implicit def bitSetDecorator[C <: BitSet with BitSetOps[C]](bs: C): BitSetDecorator[C] =
     new BitSetDecorator(bs)
 
+  implicit def mutableBitSetDecorator(bs: mutable.BitSet): MutableBitSetDecorator =
+    new MutableBitSetDecorator(bs)
+
 }
