@@ -37,6 +37,13 @@ class BitSetDecoratorTest {
   }
 
   @Test
+  def skipZeroWordsOnShiftLeft(): Unit = {
+    val result = BitSet(5 * 64 - 1) << 64
+    assertEquals(BitSet(6 * 64 - 1), result)
+    assertEquals(6, result.nwords)
+  }
+
+  @Test
   def shiftEmptyRight(): Unit = {
     for (shiftBy <- 0 to 128) {
       assertSame(empty, empty >> shiftBy)
