@@ -5,7 +5,7 @@ import org.junit.runner.RunWith
 import org.junit.runners.JUnit4
 
 @RunWith(classOf[JUnit4])
-class MultiMapTest {
+class MultiDictTest {
 
   @Test
   def multiMap(): Unit = {

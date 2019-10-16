@@ -7,11 +7,11 @@ import org.junit.runner.RunWith
 import org.junit.runners.JUnit4
 
 @RunWith(classOf[JUnit4])
-class MultiSetTest {
+class BagTest {
 
   @Test
-  def multiSet(): Unit = {
-    val ms = MultiSet.empty[String]
+  def bag(): Unit = {
+    val ms = Bag.empty[String]
 
     ms += "a"
     ms += "a"

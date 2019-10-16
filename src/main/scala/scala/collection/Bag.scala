@@ -3,26 +3,28 @@ package scala.collection
 import scala.util.hashing.MurmurHash3
 
 /**
-  * A multiset is a set that can contain multiple occurrences of a same value.
+  * A bag is an unordered collection that can contain multiple occurrences of the same value.
+  *
+  * Two bags are defined to be equal if they have the same elements, and the same number of occurrences of each element.
   *
   * @tparam A the element type of the collection
   */
-trait MultiSet[A]
+trait Bag[A]
   extends Iterable[A]
-    with MultiSetOps[A, MultiSet, MultiSet[A]]
+    with BagOps[A, Bag, Bag[A]]
     with Equals {
 
-  override protected[this] def className: String = "MultiSet"
+  override protected[this] def className: String = "Bag"
 
-  override def iterableFactory: IterableFactory[MultiSet] = MultiSet
-  override protected def fromSpecific(coll: IterableOnce[A]): MultiSet[A] = iterableFactory.from(coll)
-  override protected def newSpecificBuilder: mutable.Builder[A, MultiSet[A]] = iterableFactory.newBuilder
-  override def empty: MultiSet[A] = iterableFactory.empty
+  override def iterableFactory: IterableFactory[Bag] = Bag
+  override protected def fromSpecific(coll: IterableOnce[A]): Bag[A] = iterableFactory.from(coll)
+  override protected def newSpecificBuilder: mutable.Builder[A, Bag[A]] = iterableFactory.newBuilder
+  override def empty: Bag[A] = iterableFactory.empty
 
   def canEqual(that: Any): Boolean = true
 
   override def equals(o: Any): Boolean = o match {
-    case that: MultiSet[A] =>
+    case that: Bag[A] =>
       (this eq that) ||
         (that canEqual this) &&
           (this.size == that.size) && {
@@ -39,7 +41,7 @@ trait MultiSet[A]
 
 }
 
-trait MultiSetOps[A, +CC[X] <: MultiSet[X], +C <: MultiSet[A]]
+trait BagOps[A, +CC[X] <: Bag[X], +C <: Bag[A]]
   extends IterableOps[A, CC, C] {
 
   protected[this] def fromSpecificOccurrences(it: Iterable[(A, Int)]): C =
@@ -126,4 +128,4 @@ trait MultiSetOps[A, +CC[X] <: MultiSet[X], +C <: MultiSet[A]]
 
 }
 
-object MultiSet extends IterableFactory.Delegate(immutable.MultiSet)
+object Bag extends IterableFactory.Delegate(immutable.Bag)

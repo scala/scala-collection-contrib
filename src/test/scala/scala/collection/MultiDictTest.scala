@@ -83,7 +83,7 @@ class MultiDictTest {
       assert(actual.startsWith(prefix), s"`$actual` does not start with `$prefix`")
       assert(actual.endsWith(suffix), s"`$actual` does not end with `$suffix`")
 
-      // The order of elements in the multiset are not defined, so this test should be robust to order changes
+      // The order of elements in the bag are not defined, so this test should be robust to order changes
 
       val expected =
         actual

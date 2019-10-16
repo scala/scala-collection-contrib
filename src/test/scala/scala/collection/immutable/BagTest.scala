@@ -5,11 +5,11 @@ import org.junit.runner.RunWith
 import org.junit.runners.JUnit4
 
 @RunWith(classOf[JUnit4])
-class MultiSetTest {
+class BagTest {
 
   @Test
-  def multiSet(): Unit = {
-    val ms = MultiSet("a", "b", "b", "c")
+  def bag(): Unit = {
+    val ms = Bag("a", "b", "b", "c")
     val m = Map("a" -> 1, "b" -> 2, "c" -> 1)
     Assert.assertEquals(m, ms.occurrences)
     Assert.assertEquals(ms.occurrences, m)

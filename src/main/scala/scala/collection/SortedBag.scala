@@ -3,25 +3,25 @@ package scala.collection
 import scala.annotation.unchecked.uncheckedVariance
 
 /**
-  * Multiset whose elements are sorted
+  * Bag whose elements are sorted
   * @tparam A Type of elements
   */
-trait SortedMultiSet[A]
-  extends MultiSet[A]
-    with SortedMultiSetOps[A, SortedMultiSet, SortedMultiSet[A]] {
+trait SortedBag[A]
+  extends Bag[A]
+    with SortedBagOps[A, SortedBag, SortedBag[A]] {
 
-  def unsorted: MultiSet[A] = this
+  def unsorted: Bag[A] = this
 
-  def sortedIterableFactory: SortedIterableFactory[SortedMultiSet] = SortedMultiSet
-  override protected def fromSpecific(coll: IterableOnce[A]): SortedMultiSet[A] = sortedIterableFactory.from(coll)(ordering)
-  override protected def newSpecificBuilder: mutable.Builder[A, SortedMultiSet[A]] = sortedIterableFactory.newBuilder(ordering)
-  override def empty: SortedMultiSet[A] = sortedIterableFactory.empty(ordering)
-  override def withFilter(p: A => Boolean): SortedMultiSetOps.WithFilter[A, MultiSet, SortedMultiSet] = new SortedMultiSetOps.WithFilter(this, p)
+  def sortedIterableFactory: SortedIterableFactory[SortedBag] = SortedBag
+  override protected def fromSpecific(coll: IterableOnce[A]): SortedBag[A] = sortedIterableFactory.from(coll)(ordering)
+  override protected def newSpecificBuilder: mutable.Builder[A, SortedBag[A]] = sortedIterableFactory.newBuilder(ordering)
+  override def empty: SortedBag[A] = sortedIterableFactory.empty(ordering)
+  override def withFilter(p: A => Boolean): SortedBagOps.WithFilter[A, Bag, SortedBag] = new SortedBagOps.WithFilter(this, p)
 
 }
 
-trait SortedMultiSetOps[A, +CC[X] <: MultiSet[X], +C <: MultiSet[A]]
-  extends MultiSetOps[A, MultiSet, C]
+trait SortedBagOps[A, +CC[X] <: Bag[X], +C <: Bag[A]]
+  extends BagOps[A, Bag, C]
     with SortedOps[A, C] {
 
   def sortedIterableFactory: SortedIterableFactory[CC]
@@ -30,8 +30,8 @@ trait SortedMultiSetOps[A, +CC[X] <: MultiSet[X], +C <: MultiSet[A]]
   protected def sortedFromOccurrences[B : Ordering](it: Iterable[(B, Int)]): CC[B] =
     sortedFromIterable(it.view.flatMap { case (b, n) => new View.Fill(n)(b) })
 
-  /** `this` sorted multiset upcasted to an unsorted multiset */
-  def unsorted: MultiSet[A]
+  /** `this` sorted bag upcasted to an unsorted bag */
+  def unsorted: Bag[A]
 
   def occurrences: SortedMap[A, Int]
 
@@ -60,61 +60,61 @@ trait SortedMultiSetOps[A, +CC[X] <: MultiSet[X], +C <: MultiSet[A]]
       rangeUntil(next)
   }
 
-  /** Builds a new sorted multiset by applying a function to all elements of this sorted multiset.
+  /** Builds a new sorted bag by applying a function to all elements of this sorted bag.
     *
     *  @param f      the function to apply to each element.
     *  @tparam B     the element type of the returned collection.
     *  @return       a new collection resulting from applying the given function
-    *                `f` to each element of this sorted multiset and collecting the results.
+    *                `f` to each element of this sorted bag and collecting the results.
     */
   def map[B : Ordering](f: A => B): CC[B] = sortedFromIterable(new View.Map(toIterable, f))
 
   /**
-    * Builds a new sorted multiset by applying a function to all pairs of element and its
+    * Builds a new sorted bag by applying a function to all pairs of element and its
     * number of occurrences.
     *
     * @param f  the function to apply
     * @tparam B the element type of the returned collection
     * @return   a new collection resulting from applying the given function
     *           `f` to each pair of element and its number of occurrences of this
-    *           sorted multiset and collecting the results.
+    *           sorted bag and collecting the results.
     */
   def mapOccurrences[B : Ordering](f: ((A, Int)) => (B, Int)): CC[B] =
     sortedFromOccurrences(new View.Map(occurrences, f))
 
   /**
     * Builds a new collection by applying a function to all elements of this sorted
-    * multiset and using the elements of the resulting collections.
+    * bag and using the elements of the resulting collections.
     *
     * @param f      the function to apply to each element.
     * @tparam B     the element type of the returned collection.
     * @return a new collection resulting from applying the given function `f` to
-    *         each element of this sorted multiset and concatenating the results.
+    *         each element of this sorted bag and concatenating the results.
     */
   def flatMap[B : Ordering](f: A => IterableOnce[B]): CC[B] = sortedFromIterable(new View.FlatMap(toIterable, f))
 
   /**
     * Builds a new collection by applying a function to all pairs of element and
-    * its number of occurrences of this sorted multiset and using the elements of
+    * its number of occurrences of this sorted bag and using the elements of
     * the resulting collections.
     *
     * @param f      the function to apply to each element.
     * @tparam B     the element type of the returned collection.
     * @return a new collection resulting from applying the given function `f` to
     *         each pair of element and its number of occurrences of this sorted
-    *         multiset and concatenating the results.
+    *         bag and concatenating the results.
     */
   def flatMapOccurrences[B : Ordering](f: ((A, Int)) => IterableOnce[(B, Int)]): CC[B] =
     sortedFromOccurrences(new View.FlatMap(occurrences, f))
 
   /**
-    * Returns a sorted multiset formed from this sorted multiset and another iterable
+    * Returns a sorted bag formed from this sorted bag and another iterable
     * collection, by combining corresponding elements in pairs.
     * @param that The iterable providing the second half of each result pair
     * @param ev The ordering instance for type `B`
     * @tparam B the type of the second half of the returned pairs
-    * @return a new sorted multiset containing pairs consisting of corresponding elements
-    *         of this sorted multiset and `that`. The length of the returned collection
+    * @return a new sorted bag containing pairs consisting of corresponding elements
+    *         of this sorted bag and `that`. The length of the returned collection
     *         is the minimum of the lengths of `this` and `that`
     */
   def zip[B](that: Iterable[B])(implicit ev: Ordering[B]): CC[(A @uncheckedVariance, B)] = // sound bcs of VarianceNote
@@ -124,7 +124,7 @@ trait SortedMultiSetOps[A, +CC[X] <: MultiSet[X], +C <: MultiSet[A]]
     * @return a new collection resulting from applying the given partial
     *         function `pf` to each element on which it is defined and
     *         collecting the results
-    * @param pf the partial function which filters and map this sorted multiset
+    * @param pf the partial function which filters and map this sorted bag
     * @tparam B the element type of the returned collection
     */
   def collect[B : Ordering](pf: PartialFunction[A, B]): CC[B] = flatMap(a =>
@@ -136,7 +136,7 @@ trait SortedMultiSetOps[A, +CC[X] <: MultiSet[X], +C <: MultiSet[A]]
     * @return a new collection resulting from applying the given partial
     *         function `pf` to each group of occurrences on which it is defined and
     *         collecting the results
-    * @param pf the partial function which filters and map this sorted multiset
+    * @param pf the partial function which filters and map this sorted bag
     * @tparam B the element type of the returned collection
     */
   def collectOccurrences[B : Ordering](pf: PartialFunction[(A, Int), (B, Int)]): CC[B] = flatMapOccurrences(a =>
@@ -144,21 +144,21 @@ trait SortedMultiSetOps[A, +CC[X] <: MultiSet[X], +C <: MultiSet[A]]
     else View.Empty
   )
 
-  // --- Override return type of methods that returned an unsorted MultiSet
+  // --- Override return type of methods that returned an unsorted Bag
 
   override def zipWithIndex: CC[(A, Int)] =
     sortedFromIterable(new View.ZipWithIndex(toIterable))(Ordering.Tuple2(ordering, implicitly))
 
 }
 
-object SortedMultiSetOps {
+object SortedBagOps {
 
   /** Specialize `WithFilter` for sorted collections
     *
     * @define coll sorted collection
     */
-  class WithFilter[A, +IterableCC[_], +CC[X] <: MultiSet[X]](
-    `this`: SortedMultiSetOps[A, CC, _] with IterableOps[A, IterableCC, _],
+  class WithFilter[A, +IterableCC[_], +CC[X] <: Bag[X]](
+    `this`: SortedBagOps[A, CC, _] with IterableOps[A, IterableCC, _],
     p: A => Boolean
   ) extends IterableOps.WithFilter[A, IterableCC](`this`, p) {
 
@@ -175,4 +175,4 @@ object SortedMultiSetOps {
 
 }
 
-object SortedMultiSet extends SortedIterableFactory.Delegate(immutable.SortedMultiSet)
+object SortedBag extends SortedIterableFactory.Delegate(immutable.SortedBag)

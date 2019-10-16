@@ -69,7 +69,7 @@ trait SortedMultiDictOps[K, V, +CC[X, Y] <: MultiDict[X, Y], +C <: MultiDict[K, 
     * @tparam L the type of keys of the returned collection
     * @return   a new collection resulting from applying the given function
     *           `f` to each pair of element and its number of occurrences of this
-    *           sorted multiset and collecting the results.
+    *           sorted multidict and collecting the results.
     */
   def mapSets[L : Ordering, W](f: ((K, Set[V])) => (L, Set[W])): CC[L, W] = sortedFromSets(new View.Map(sets, f))
 

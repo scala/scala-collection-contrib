@@ -73,7 +73,7 @@ object MultiDict extends MapFactory[MultiDict] {
       case _ => (newBuilder[K, V] ++= source).result()
     }
 
-  def newBuilder[K, V]: Builder[(K, V), MultiDict[K, V]] =
+  def newBuilder[K, V]: mutable.Builder[(K, V), MultiDict[K, V]] =
     new ImmutableBuilder[(K, V), MultiDict[K, V]](empty[K, V]) {
       def addOne(elem: (K, V)): this.type = { elems = elems + elem; this }
     }
