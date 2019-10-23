@@ -35,11 +35,11 @@ import scala.collection.decorators._
 
 The following operations are provided:
 
-- [`BitSet`](https://static.javadoc.io/org.scala-lang.modules/scala-collection-contrib_2.13/0.2.0/scala/collection/decorators/BitSetDecorator.html): <<, >>, foldSomeLeft, fullOuterJoin, intersperse, intersperse, join, lazyFoldLeft, lazyFoldRight, leftOuterJoin, mergeByKey, mergeByKeyWith, replaced, rightOuterJoin, splitBy, zipByKey, zipByKeyWith
-- [`Iterable`](https://static.javadoc.io/org.scala-lang.modules/scala-collection-contrib_2.13/0.2.0/scala/collection/decorators/IterableDecorator.html): foldSomeLeft, fullOuterJoin, intersperse, intersperse, join, lazyFoldLeft, lazyFoldRight, leftOuterJoin, mergeByKey, mergeByKeyWith, replaced, rightOuterJoin, splitBy, zipByKey, zipByKeyWith
-- [`Iterator`](https://static.javadoc.io/org.scala-lang.modules/scala-collection-contrib_2.13/0.2.0/scala/collection/decorators/IteratorDecorator.html): foldSomeLeft, fullOuterJoin, intersperse, intersperse, join, lazyFoldLeft, lazyFoldRight, leftOuterJoin, mergeByKey, mergeByKeyWith, replaced, rightOuterJoin, splitBy, zipByKey, zipByKeyWith, foldSomeLeft, intersperse, intersperse, lazyFoldLeft, lazyFoldRight, splitBy
-- [`Map`](https://static.javadoc.io/org.scala-lang.modules/scala-collection-contrib_2.13/0.2.0/scala/collection/decorators/MapDecorator.html): foldSomeLeft, fullOuterJoin, intersperse, intersperse, join, lazyFoldLeft, lazyFoldRight, leftOuterJoin, mergeByKey, mergeByKeyWith, replaced, rightOuterJoin, splitBy, zipByKeyWith
-- [`Seq`](https://static.javadoc.io/org.scala-lang.modules/scala-collection-contrib_2.13/0.2.0/scala/collection/decorators/SeqDecorator.html): foldSomeLeft, intersperse, join, lazyFoldLeft, lazyFoldRight, leftOuterJoin, mergeByKey, mergeByKeyWith, replaced, rightOuterJoin, splitBy, zipByKey, zipByKeyWith
+- [`BitSet`](https://static.javadoc.io/org.scala-lang.modules/scala-collection-contrib_2.13/0.2.0/scala/collection/decorators/BitSetDecorator.html): <<, >>, ...
+- [`Iterable`](https://static.javadoc.io/org.scala-lang.modules/scala-collection-contrib_2.13/0.2.0/scala/collection/decorators/IterableDecorator.html): foldSomeLeft, lazyFoldLeft, lazyFoldRight, splitBy, ...
+- [`Iterator`](https://static.javadoc.io/org.scala-lang.modules/scala-collection-contrib_2.13/0.2.0/scala/collection/decorators/IteratorDecorator.html): intersperse, foldSomeLeft, lazyFoldLeft, lazyFoldRight, splitBy, ...
+- [`Map`](https://static.javadoc.io/org.scala-lang.modules/scala-collection-contrib_2.13/0.2.0/scala/collection/decorators/MapDecorator.html): fullOuterJoin, leftOuterJoin, mergeByKey, mergeByKeyWith, rightOuterJoin, zipByKey, zipByKeyWith, ...
+- [`Seq`](https://static.javadoc.io/org.scala-lang.modules/scala-collection-contrib_2.13/0.2.0/scala/collection/decorators/SeqDecorator.html): intersperse, replaced, splitBy, ...
 
 
 ## Maintenance status
