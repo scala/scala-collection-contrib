@@ -7,6 +7,23 @@ import scala.util.Try
 
 class IteratorDecoratorTest {
   @Test
+  def intersperseShouldIntersperseASeparator(): Unit = {
+    Assert.assertEquals(Iterator(1, 2, 3).intersperse(0).toSeq, Seq(1, 0, 2, 0, 3))
+    Assert.assertEquals(Iterator('a', 'b', 'c').intersperse(',').toSeq, Seq('a', ',', 'b', ',', 'c'))
+    Assert.assertEquals(Iterator('a').intersperse(',').toSeq, Seq('a'))
+    Assert.assertEquals(Iterator().intersperse(',').toSeq, Seq.empty)
+  }
+
+  @Test
+  def intersperseShouldIntersperseASeparatorAndInsertStartAndEnd(): Unit = {
+    Assert.assertEquals(Iterator(1, 2, 3).intersperse(-1, 0, 99).toSeq, Seq(-1, 1, 0, 2, 0, 3, 99))
+    Assert.assertEquals(Iterator('a', 'b', 'c').intersperse('[', ',', ']').toSeq,
+      Seq('[', 'a', ',', 'b', ',', 'c', ']'))
+    Assert.assertEquals(Iterator('a').intersperse('[', ',', ']').toSeq, Seq('[', 'a', ']'))
+    Assert.assertEquals(Iterator().intersperse('[', ',', ']').toSeq, Seq('[', ']'))
+  }
+
+  @Test
   def splitByShouldHonorEmptyIterator(): Unit = {
     val groupedIterator = Iterator.empty.splitBy(identity)
     Assert.assertFalse(groupedIterator.hasNext)

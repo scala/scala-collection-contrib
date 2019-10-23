@@ -5,6 +5,19 @@ import scala.annotation.tailrec
 
 class IteratorDecorator[A](val `this`: Iterator[A]) extends AnyVal {
 
+  /**
+    * Inserts a separator value between each item.
+    *
+    * {{{
+    *   Iterator(1, 2, 3).intersperse(0) === Iterator(1, 0, 2, 0, 3)
+    *   Iterator('a', 'b', 'c').intersperse(',') === Iterator('a', ',', 'b', ',', 'c')
+    *   Iterator('a').intersperse(',') === Iterator('a')
+    *   Iterator().intersperse(',') === Iterator()
+    * }}}
+    *
+    * @param sep the separator value.
+    * @return    The resulting iterator contains all items from the source iterator, separated by the `sep` value.
+    */
   def intersperse[B >: A](sep: B): Iterator[B] = new Iterator[B] {
     var intersperseNext = false
     override def hasNext = intersperseNext || `this`.hasNext
@@ -15,6 +28,25 @@ class IteratorDecorator[A](val `this`: Iterator[A]) extends AnyVal {
     }
   }
 
+  /**
+    * Inserts a start value at the start of the iterator, a separator value between each item, and
+    * an end value at the end of the iterator.
+    *
+    * {{{
+    *   Iterator(1, 2, 3).intersperse(-1, 0, 99) === Iterator(-1, 1, 0, 2, 0, 3, 99)
+    *   Iterator('a', 'b', 'c').intersperse('[', ',', ']') === Iterator('[', 'a', ',', 'b', ',', 'c', ']')
+    *   Iterator('a').intersperse('[', ',', ']') === Iterator('[', 'a', ']')
+    *   Iterator().intersperse('[', ',', ']') === Iterator('[', ']')
+    * }}}
+    *
+    * @param start the starting value.
+    * @param sep   the separator value.
+    * @param end   the ending value.
+    * @return      The resulting iterator
+    *              begins with the `start` value and ends with the `end` value.
+    *              Inside, are all items from the source iterator separated by
+    *              the `sep` value.
+    */
   def intersperse[B >: A](start: B, sep: B, end: B): Iterator[B] = new Iterator[B] {
     var started = false
     var finished = false
