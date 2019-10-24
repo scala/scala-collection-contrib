@@ -15,6 +15,9 @@ import scala.annotation.tailrec
   *  on, and use only the iterator that was returned. Using the old iterator
   *  is undefined, subject to change, and may result in changes to the new
   *  iterator as well.
+  * @define pseudoCodeExample
+  *  The `===` operator in this pseudo code stands for 'is equivalent to';
+  *  both sides of the `===` give the same result.
   */
 class IteratorDecorator[A](val `this`: Iterator[A]) extends AnyVal {
 
@@ -27,6 +30,7 @@ class IteratorDecorator[A](val `this`: Iterator[A]) extends AnyVal {
     *   Iterator('a').intersperse(',') === Iterator('a')
     *   Iterator().intersperse(',') === Iterator()
     * }}}
+    * $pseudoCodeExample
     *
     * @param sep the separator value.
     * @return    The resulting iterator contains all elements from the source iterator, separated by the `sep` value.
@@ -52,6 +56,7 @@ class IteratorDecorator[A](val `this`: Iterator[A]) extends AnyVal {
     *   Iterator('a').intersperse('[', ',', ']') === Iterator('[', 'a', ']')
     *   Iterator().intersperse('[', ',', ']') === Iterator('[', ']')
     * }}}
+    * $pseudoCodeExample
     *
     * @param start the starting value.
     * @param sep   the separator value.
@@ -99,6 +104,7 @@ class IteratorDecorator[A](val `this`: Iterator[A]) extends AnyVal {
     *   Iterator(1, 2, 3).foldSomeLeft(0)(sumOp) === 6
     *   Iterator(1, 2, 3, 4, 5).foldSomeLeft(0)(sumOp) === 6
     * }}}
+    * $pseudoCodeExample
     *
     * @param z the start value
     * @param op the binary operator
@@ -169,6 +175,7 @@ class IteratorDecorator[A](val `this`: Iterator[A]) extends AnyVal {
     * Iterator(1,2,2,3,3,3,2,2).splitBy(identity) === Iterator(Seq(1), Seq(2,2), Seq(3,3,3), Seq(2,2))
     * Iterator((1,1), (1,2), (2, 3)).splitBy(_._1) === Iterator(Seq((1,1), (1,2)), Seq((2,3)))
     * }}}
+    * $pseudoCodeExample
     *
     * @param f the function to compute a key for an element
     * @tparam K the type of the computed key
