@@ -3,8 +3,39 @@ package decorators
 
 import scala.annotation.tailrec
 
+/** Enriches Iterator with additional methods.
+  *
+  * @define mayNotTerminateInf
+  *  Note: may not terminate for infinite iterators.
+  * @define consumesIterator
+  *  After calling this method, one should discard the iterator it was called
+  *  on. Using it is undefined and subject to change.
+  * @define consumesAndProducesIterator
+  *  After calling this method, one should discard the iterator it was called
+  *  on, and use only the iterator that was returned. Using the old iterator
+  *  is undefined, subject to change, and may result in changes to the new
+  *  iterator as well.
+  * @define pseudoCodeExample
+  *  The `===` operator in this pseudo code stands for 'is equivalent to';
+  *  both sides of the `===` give the same result.
+  */
 class IteratorDecorator[A](val `this`: Iterator[A]) extends AnyVal {
 
+  /**
+    * Inserts a separator value between each element.
+    *
+    * {{{
+    *   Iterator(1, 2, 3).intersperse(0) === Iterator(1, 0, 2, 0, 3)
+    *   Iterator('a', 'b', 'c').intersperse(',') === Iterator('a', ',', 'b', ',', 'c')
+    *   Iterator('a').intersperse(',') === Iterator('a')
+    *   Iterator().intersperse(',') === Iterator()
+    * }}}
+    * $pseudoCodeExample
+    *
+    * @param sep the separator value.
+    * @return    The resulting iterator contains all elements from the source iterator, separated by the `sep` value.
+    * @note      Reuse: $consumesAndProducesIterator
+    */
   def intersperse[B >: A](sep: B): Iterator[B] = new Iterator[B] {
     var intersperseNext = false
     override def hasNext = intersperseNext || `this`.hasNext
@@ -15,6 +46,27 @@ class IteratorDecorator[A](val `this`: Iterator[A]) extends AnyVal {
     }
   }
 
+  /**
+    * Inserts a start value at the start of the iterator, a separator value between each element, and
+    * an end value at the end of the iterator.
+    *
+    * {{{
+    *   Iterator(1, 2, 3).intersperse(-1, 0, 99) === Iterator(-1, 1, 0, 2, 0, 3, 99)
+    *   Iterator('a', 'b', 'c').intersperse('[', ',', ']') === Iterator('[', 'a', ',', 'b', ',', 'c', ']')
+    *   Iterator('a').intersperse('[', ',', ']') === Iterator('[', 'a', ']')
+    *   Iterator().intersperse('[', ',', ']') === Iterator('[', ']')
+    * }}}
+    * $pseudoCodeExample
+    *
+    * @param start the starting value.
+    * @param sep   the separator value.
+    * @param end   the ending value.
+    * @return      The resulting iterator
+    *              begins with the `start` value and ends with the `end` value.
+    *              Inside, are all elements from the source iterator separated by
+    *              the `sep` value.
+    * @note        Reuse: $consumesAndProducesIterator
+    */
   def intersperse[B >: A](start: B, sep: B, end: B): Iterator[B] = new Iterator[B] {
     var started = false
     var finished = false
@@ -41,6 +93,27 @@ class IteratorDecorator[A](val `this`: Iterator[A]) extends AnyVal {
       }
   }
 
+  /**
+    * Folds elements with combination function `op` until
+    * all elements have been processed, or `op` returns `None`.
+    * $mayNotTerminateInf
+    *
+    * {{{
+    *   def sumOp(acc: Int, e: Int): Option[Int] = if (e == 4) None else Some(acc + e)
+    *   Iterator.empty.foldSomeLeft(0)(sumOp) === 0
+    *   Iterator(1, 2, 3).foldSomeLeft(0)(sumOp) === 6
+    *   Iterator(1, 2, 3, 4, 5).foldSomeLeft(0)(sumOp) === 6
+    * }}}
+    * $pseudoCodeExample
+    *
+    * @param z the start value
+    * @param op the binary operator
+    * @tparam B the result type of the binary operator
+    * @return the result of evaluating `op` on the previous result of `op` (or `z` for the first time) and
+    *         elements of the source iterator, stopping when all the elements have been
+    *         iterated or earlier when `op` returns `None`
+    * @note Reuse: $consumesIterator
+    */
   def foldSomeLeft[B](z: B)(op: (B, A) => Option[B]): B = {
     var result: B = z
     while (`this`.hasNext) {
@@ -52,6 +125,10 @@ class IteratorDecorator[A](val `this`: Iterator[A]) extends AnyVal {
     result
   }
 
+  /**
+    * $mayNotTerminateInf
+    * @note Reuse: $consumesIterator
+    */
   def lazyFoldLeft[B](z: B)(op: (B, => A) => B): B = {
     var result = z
     var finished = false
@@ -66,6 +143,10 @@ class IteratorDecorator[A](val `this`: Iterator[A]) extends AnyVal {
     result
   }
 
+  /**
+    * $mayNotTerminateInf
+    * @note Reuse: $consumesIterator
+    */
   def lazyFoldRight[B](z: B)(op: A => Either[B, B => B]): B = {
 
     def chainEval(x: B, fs: immutable.List[B => B]): B =
@@ -87,26 +168,20 @@ class IteratorDecorator[A](val `this`: Iterator[A]) extends AnyVal {
   }
 
   /**
-    * Constructs an iterator where consecutive elements are accumulated as
-    * long as the output of f for each element doesn't change.
-    * <pre>
-    * Vector(1,2,2,3,3,3,2,2)
-    * .iterator
-    * .splitBy(identity)
-    * .toList
-    * </pre>
-    * produces
-    * <pre>
-    * List(Seq(1),
-    * Seq(2,2),
-    * Seq(3,3,3),
-    * Seq(2,2))
-    * </pre>
+    * Constructs an iterator in which each element is a the sequence of accumulated elements
+    * from the source iterator that have the same key, where the key is calculated by `f`.
+    *
+    * {{{
+    * Iterator(1,2,2,3,3,3,2,2).splitBy(identity) === Iterator(Seq(1), Seq(2,2), Seq(3,3,3), Seq(2,2))
+    * Iterator((1,1), (1,2), (2, 3)).splitBy(_._1) === Iterator(Seq((1,1), (1,2)), Seq((2,3)))
+    * }}}
+    * $pseudoCodeExample
     *
     * @param f the function to compute a key for an element
     * @tparam K the type of the computed key
     * @return an iterator of sequences of the consecutive elements with the
     *         same key in the original iterator
+    * @note Reuse: $consumesIterator
     */
   def splitBy[K](f: A => K): Iterator[immutable.Seq[A]] =
     new AbstractIterator[immutable.Seq[A]] {
