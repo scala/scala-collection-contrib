@@ -3,7 +3,7 @@ package decorators
 
 import scala.annotation.tailrec
 
-/** Enriches [[Iterator]] with additional methods.
+/** Enriches [[scala.collection.Iterator]] with additional methods.
   *
   * @define mayNotTerminateInf
   *  Note: may not terminate for infinite iterators.
