@@ -3,6 +3,19 @@ package decorators
 
 import scala.annotation.tailrec
 
+/** Enriches [[Iterator]] with additional methods.
+  *
+  * @define mayNotTerminateInf
+  *  Note: may not terminate for infinite iterators.
+  * @define consumesIterator
+  *  After calling this method, one should discard the iterator it was called
+  *  on. Using it is undefined and subject to change.
+  * @define consumesAndProducesIterator
+  *  After calling this method, one should discard the iterator it was called
+  *  on, and use only the iterator that was returned. Using the old iterator
+  *  is undefined, subject to change, and may result in changes to the new
+  *  iterator as well.
+  */
 class IteratorDecorator[A](val `this`: Iterator[A]) extends AnyVal {
 
   /**
@@ -17,7 +30,7 @@ class IteratorDecorator[A](val `this`: Iterator[A]) extends AnyVal {
     *
     * @param sep the separator value.
     * @return    The resulting iterator contains all elements from the source iterator, separated by the `sep` value.
-    * @note      Reuse: $consumesIterator
+    * @note      Reuse: $consumesAndProducesIterator
     */
   def intersperse[B >: A](sep: B): Iterator[B] = new Iterator[B] {
     var intersperseNext = false
@@ -47,7 +60,7 @@ class IteratorDecorator[A](val `this`: Iterator[A]) extends AnyVal {
     *              begins with the `start` value and ends with the `end` value.
     *              Inside, are all elements from the source iterator separated by
     *              the `sep` value.
-    * @note        Reuse: $consumesIterator
+    * @note        Reuse: $consumesAndProducesIterator
     */
   def intersperse[B >: A](start: B, sep: B, end: B): Iterator[B] = new Iterator[B] {
     var started = false
