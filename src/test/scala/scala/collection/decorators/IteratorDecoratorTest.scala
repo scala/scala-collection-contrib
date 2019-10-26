@@ -12,6 +12,8 @@ class IteratorDecoratorTest {
     Assert.assertEquals(Seq('a', ',', 'b', ',', 'c'), Iterator('a', 'b', 'c').intersperse(',').toSeq)
     Assert.assertEquals(Seq('a'), Iterator('a').intersperse(',').toSeq)
     Assert.assertEquals(Seq.empty, Iterator().intersperse(',').toSeq)
+    // Works with infinite iterators:
+    Assert.assertEquals(Seq(1, 0, 2, 0, 3), Iterator.from(1).intersperse(0).take(5).toSeq)
   }
 
   @Test
@@ -21,6 +23,8 @@ class IteratorDecoratorTest {
       Iterator('a', 'b', 'c').intersperse('[', ',', ']').toSeq)
     Assert.assertEquals(Seq('[', 'a', ']'), Iterator('a').intersperse('[', ',', ']').toSeq)
     Assert.assertEquals(Seq('[', ']'), Iterator().intersperse('[', ',', ']').toSeq)
+    // Works with infinite iterators:
+    Assert.assertEquals(Seq(-1, 1, 0, 2, 0, 3), Iterator.from(1).intersperse(-1, 0, 99).take(6).toSeq)
   }
 
   @Test
@@ -30,6 +34,9 @@ class IteratorDecoratorTest {
     Assert.assertEquals(6, Iterator(1, 2, 3).foldSomeLeft(0)(sumOp))
     Assert.assertEquals(6, Iterator(1, 2, 3, 4, 5).foldSomeLeft(0)(sumOp))
     Assert.assertEquals(0, Iterator(4, 5).foldSomeLeft(0)(sumOp))
+    // Works with infinite iterators:
+    def sumMax4(acc: Int, e: Int): Option[Int] = if (acc == 4) None else Some(acc + e)
+    Assert.assertEquals(4, Iterator.continually(1).foldSomeLeft(0)(sumMax4))
   }
 
   @Test
@@ -43,6 +50,8 @@ class IteratorDecoratorTest {
     Assert.assertEquals(9, Iterator(4, 5).lazyFoldLeft(0)(sumOp))
     Assert.assertEquals(9, Iterator(4, 5, 1).lazyFoldLeft(0)(sumOp))
     Assert.assertEquals(10, Iterator(10, 20, 30).lazyFoldLeft(0)(sumOp))
+    // Works with infinite iterators:
+    Assert.assertEquals(5, Iterator.continually(1).lazyFoldLeft(0)(sumOp))
   }
 
   @Test
@@ -54,6 +63,8 @@ class IteratorDecoratorTest {
     Assert.assertEquals(9, Iterator(4, 5).lazyFoldLeft(0)(delayedSumOp))
     Assert.assertEquals(5, Iterator(4, 5, 1).lazyFoldLeft(0)(delayedSumOp))
     Assert.assertEquals(5, Iterator(6, 1).lazyFoldLeft(0)(delayedSumOp))
+    // Works with infinite iterators:
+    Assert.assertEquals(5, Iterator.continually(1).lazyFoldLeft(0)(delayedSumOp))
 
     // `alwaysGrowingSumOp` returns a new value every time, causing no stop in the iteration.
     def alwaysGrowingSumOp(acc: Int, e: => Int): Int = if (acc >= 5) acc + 1 else acc + e
@@ -115,6 +126,14 @@ class IteratorDecoratorTest {
     Assert.assertEquals(
       Seq(Seq((1,1), (1,2)), Seq((2,3)), Seq((1,4))),
       Iterator((1,1), (1,2), (2,3), (1,4)).splitBy(_._1).toSeq
+    )
+  }
+
+  @Test
+  def splitByShouldSplitInfiniteIterators(): Unit = {
+    Assert.assertEquals(
+      Seq(Seq(0, 0, 0), Seq(1, 1, 1), Seq(2, 2, 2)),
+      Iterator.from(0).map(_ / 3).splitBy(identity).take(3).toSeq
     )
   }
 
