@@ -235,24 +235,7 @@ class IteratorDecorator[A](val `this`: Iterator[A]) extends AnyVal {
     * @note   Reuse: $consumesAndProducesIterator
     */
   def takeUntilException: Iterator[A] = {
-    new AbstractIterator[A] {
-      private val wrapped = `this`.buffered
-
-      override def hasNext: Boolean = {
-        try {
-          val n = wrapped.hasNext
-          // By already invoking `head` (and therefore also `next` on `this`),
-          // we are sure that `wrapped.next` will not throw when it is used from
-          // `next`.
-          if (n) wrapped.head
-          n
-        } catch {
-          case NonFatal(t) => false
-        }
-      }
-
-      override def next(): A = wrapped.next
-    }
+    takeUntilException(_ => ())
   }
 
   /** Gives elements from the source iterator until the source iterator ends or throws an exception.
