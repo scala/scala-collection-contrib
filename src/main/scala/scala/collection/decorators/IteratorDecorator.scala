@@ -7,6 +7,8 @@ import scala.annotation.tailrec
   *
   * @define mayNotTerminateInf
   *  Note: may not terminate for infinite iterators.
+  * @define doesNotTerminateInf
+  *  Note: does not terminate for infinite iterators.
   * @define consumesIterator
   *  After calling this method, one should discard the iterator it was called
   *  on. Using it is undefined and subject to change.
@@ -144,7 +146,7 @@ class IteratorDecorator[A](val `this`: Iterator[A]) extends AnyVal {
   }
 
   /**
-    * $mayNotTerminateInf
+    * $doesNotTerminateInf
     * @note Reuse: $consumesIterator
     */
   def lazyFoldRight[B](z: B)(op: A => Either[B, B => B]): B = {
