@@ -7,7 +7,7 @@ Test/sources := Nil
 lazy val collectionContrib = crossProject(JVMPlatform, JSPlatform)
   .withoutSuffixFor(JVMPlatform)
   .crossType(CrossType.Pure)
-  .in(file("."))
+  .in(file("collection-contrib"))
   .settings(ScalaModulePlugin.scalaModuleSettings)
   // as per #71, we are not currently attempting to support OSGi in this repo
   .disablePlugins(SbtOsgi)
