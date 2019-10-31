@@ -229,19 +229,21 @@ class IteratorDecorator[A](val `this`: Iterator[A]) extends AnyVal {
       }
     }
 
-  /** Gives elements from the source iterator until the source iterator ends or throws an exception.
+  /** Gives elements from the source iterator until the source iterator ends or throws a NonFatal exception.
     *
-    * @return an iterator that takes items until the source iterator ends or throws an exception
+    * @return an iterator that takes items until the source iterator ends or throws a NonFatal exception
+    * @see    scala.util.control.NonFatal
     * @note   Reuse: $consumesAndProducesIterator
     */
   def takeUntilException: Iterator[A] = {
     takeUntilException(_ => ())
   }
 
-  /** Gives elements from the source iterator until the source iterator ends or throws an exception.
+  /** Gives elements from the source iterator until the source iterator ends or throws a NonFatal exception.
     *
-    * @param  exceptionCaught a callback invoked from `hasNext` when the source iterator throws an exception
-    * @return an iterator that takes items until the wrapped iterator ends or throws an exception
+    * @param  exceptionCaught a callback invoked from `hasNext` when the source iterator throws aNonFatal exception
+    * @return an iterator that takes items until the wrapped iterator ends or throws aNonFatal exception
+    * @see    scala.util.control.NonFatal
     * @note   Reuse: $consumesAndProducesIterator
     */
   def takeUntilException(exceptionCaught: Throwable => Unit): Iterator[A] = {
