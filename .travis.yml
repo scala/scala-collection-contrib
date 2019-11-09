@@ -15,7 +15,7 @@ before_install:
   - curl -sL https://get.sdkman.io | bash
   - echo sdkman_auto_answer=true > $HOME/.sdkman/etc/config
   - source "$HOME/.sdkman/bin/sdkman-init.sh"
-  - sdk selfupdate force
+  - sdk update
 
 install:
   - sdk install java $(sdk list java | grep -o "$ADOPTOPENJDK\.[0-9\.]*hs-adpt" | head -1)
