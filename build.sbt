@@ -20,7 +20,9 @@ lazy val collectionContrib = crossProject(JVMPlatform, JSPlatform)
       "junit"            % "junit"           % "4.12"   % Test,
       "com.novocode"     % "junit-interface" % "0.11"   % Test,
       "org.openjdk.jol"  % "jol-core"        % "0.9"    % Test
-    )
+    ),
+    // https://github.com/sbt/sbt/issues/5043
+    useCoursier := false
   )
   .jvmSettings(
     scalaModuleMimaPreviousVersion := Some("0.1.0"), // why only in jvmSettings?
