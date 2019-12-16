@@ -2,6 +2,7 @@ package scala.collection
 package decorators
 
 import scala.annotation.tailrec
+import scala.util.control.NonFatal
 
 /** Enriches Iterator with additional methods.
   *
@@ -227,4 +228,44 @@ class IteratorDecorator[A](val `this`: Iterator[A]) extends AnyVal {
         }
       }
     }
+
+  /** Gives elements from the source iterator until the source iterator ends or throws a NonFatal exception.
+    *
+    * @return an iterator that takes items until the source iterator ends or throws a NonFatal exception
+    * @see    scala.util.control.NonFatal
+    * @note   Reuse: $consumesAndProducesIterator
+    */
+  def takeUntilException: Iterator[A] = {
+    takeUntilException(_ => ())
+  }
+
+  /** Gives elements from the source iterator until the source iterator ends or throws a NonFatal exception.
+    *
+    * @param  exceptionCaught a callback invoked from `hasNext` when the source iterator throws a NonFatal exception
+    * @return an iterator that takes items until the wrapped iterator ends or throws a NonFatal exception
+    * @see    scala.util.control.NonFatal
+    * @note   Reuse: $consumesAndProducesIterator
+    */
+  def takeUntilException(exceptionCaught: Throwable => Unit): Iterator[A] = {
+    new AbstractIterator[A] {
+      private val wrapped = `this`.buffered
+
+      override def hasNext: Boolean = {
+        try {
+          val n = wrapped.hasNext
+          // By already invoking `head` (and therefore also `next` on `this`),
+          // we are sure that `wrapped.next` will not throw when it is used from
+          // `next`.
+          if (n) wrapped.head
+          n
+        } catch {
+          case NonFatal(t) =>
+            exceptionCaught(t)
+            false
+        }
+      }
+
+      override def next(): A = wrapped.next
+    }
+  }
 }

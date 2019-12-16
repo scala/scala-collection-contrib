@@ -136,4 +136,67 @@ class IteratorDecoratorTest {
       Iterator.from(0).map(_ / 3).splitBy(identity).take(3).toSeq
     )
   }
+
+  @Test
+  def takeUntilExceptionShouldWrapAnyNonThrowingIterator(): Unit = {
+    Assert.assertEquals(Seq(1, 2, 3, 4, 5), Iterator(1, 2, 3, 4, 5).takeUntilException.toSeq)
+    Assert.assertEquals(Seq(1, 2, 3, 4, 5), Iterator(1, 2, 3, 4, 5).takeUntilException(_ => ()).toSeq)
+    Assert.assertEquals(Seq.empty, Iterator.empty.takeUntilException.toSeq)
+    Assert.assertEquals(Seq.empty, Iterator.empty.takeUntilException(_ => ()).toSeq)
+    // Works with infinite iterators:
+    Assert.assertEquals(Seq(1, 2, 3, 4, 5), Iterator.from(1).takeUntilException.take(5).toSeq)
+    Assert.assertEquals(Seq(1, 2, 3, 4, 5), Iterator.from(1).takeUntilException(_ => ()).take(5).toSeq)
+  }
+
+  @Test
+  def takeUntilExceptionShouldTakeTillAnExceptionFromHasNext(): Unit = {
+    val toThrow = new RuntimeException("~expected exception~")
+    def brokenIterator: Iterator[Int] = new AbstractIterator[Int] {
+      private var previousPosition = 0
+
+      override def hasNext: Boolean = {
+        if (previousPosition == 3) {
+          throw toThrow
+        } else {
+          true
+        }
+      }
+
+      override def next(): Int = {
+        previousPosition += 1
+        previousPosition
+      }
+    }
+
+    Assert.assertEquals(Seq(1, 2, 3), brokenIterator.takeUntilException.toSeq)
+
+    var caught: Throwable = null
+    Assert.assertEquals(Seq(1, 2, 3), brokenIterator.takeUntilException(caught = _).toSeq)
+    Assert.assertSame(toThrow, caught)
+  }
+
+  @Test
+  def takeUntilExceptionShouldTakeTillAnExceptionFromNext(): Unit = {
+    val toThrow = new RuntimeException("~expected exception~")
+    def brokenIterator: Iterator[Int] = new AbstractIterator[Int] {
+      private var previousPosition = 0
+
+      override def hasNext: Boolean = true
+
+      override def next(): Int = {
+        if (previousPosition == 3) {
+          throw toThrow
+        } else {
+          previousPosition += 1
+          previousPosition
+        }
+      }
+    }
+
+    Assert.assertEquals(Seq(1, 2, 3), brokenIterator.takeUntilException.toSeq)
+
+    var caught: Throwable = null
+    Assert.assertEquals(Seq(1, 2, 3), brokenIterator.takeUntilException(caught = _).toSeq)
+    Assert.assertSame(toThrow, caught)
+  }
 }
