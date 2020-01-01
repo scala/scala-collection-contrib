@@ -1,9 +1,5 @@
 import sbtcrossproject.CrossPlugin.autoImport.{CrossType, crossProject}
 
-// With CrossType.Pure, the root project also picks up the sources in `src`
-Compile/sources := Nil
-Test/sources := Nil
-
 lazy val collectionContrib = crossProject(JVMPlatform, JSPlatform)
   .withoutSuffixFor(JVMPlatform)
   .crossType(CrossType.Pure)
