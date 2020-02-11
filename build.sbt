@@ -27,7 +27,7 @@ lazy val collectionContrib = crossProject(JVMPlatform, JSPlatform)
     libraryDependencies ++= Seq(
       "junit"            % "junit"           % "4.13"   % Test,
       "com.novocode"     % "junit-interface" % "0.11"   % Test,
-      "org.openjdk.jol"  % "jol-core"        % "0.9"    % Test
+      "org.openjdk.jol"  % "jol-core"        % "0.10"    % Test
     ),
     // https://github.com/sbt/sbt/issues/5043
     useCoursier := false
