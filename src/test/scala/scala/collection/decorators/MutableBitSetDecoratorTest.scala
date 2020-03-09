@@ -2,11 +2,12 @@ package scala.collection.decorators
 
 import org.junit.{Assert, Test}
 
+import scala.collection.BitSetOps
 import scala.collection.mutable.BitSet
 
 class MutableBitSetDecoratorTest {
 
-  import Assert.{assertEquals, assertSame}
+  import Assert.{assertEquals, assertSame, assertTrue}
   import BitSet.empty
 
   @Test
@@ -102,6 +103,14 @@ class MutableBitSetDecoratorTest {
       bs >>= shiftBy
       assertEquals(expected, bs)
     }
+  }
+
+  @Test
+  def shiftLeftTwoEmptyWords(): Unit = {
+    val twoWords = BitSet(BitSetOps.WordLength + 1)
+    twoWords ^= twoWords
+    twoWords <<= 1
+    assertTrue(twoWords.isEmpty)
   }
 
 }
