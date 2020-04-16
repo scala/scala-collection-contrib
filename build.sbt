@@ -9,15 +9,6 @@ lazy val collectionContrib = crossProject(JVMPlatform, JSPlatform)
   .crossType(CrossType.Pure)
   .in(file("."))
   .settings(ScalaModulePlugin.scalaModuleSettings)
-  // as per #71, we are not currently attempting to support OSGi in this repo
-  .disablePlugins(SbtOsgi)
-  // disabling the plugin isn't sufficient; we also must refrain from letting sbt-scala-module put
-  // OSGi stuff in our settings. normally a module build would include the following commented-out
-  // line.  at present (sbt-scala-module 2.1.3), scalaModuleSettingsJVM contains *only* OSGi stuff,
-  // so the easiest thing is just to omit it.  this isn't future-proof; some future sbt-scala-module
-  // might put additional stuff in scalaModuleSettingsJVM. it would be nice if sbt-scala-module
-  // provided a setting key to selectively disable OSGi.
-  // .jvmSettings(ScalaModulePlugin.scalaModuleSettingsJVM)
   .settings(
     name := "scala-collection-contrib",
     scalacOptions ++= Seq("-opt-warnings", "-language:higherKinds", "-deprecation", "-feature", "-Xfatal-warnings"),
