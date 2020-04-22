@@ -39,38 +39,42 @@ class MutableBitSetDecorator(protected val bs: mutable.BitSet) {
 
   private def shiftLeftInPlace(shiftBy: Int): Unit = {
 
-    val bitOffset = shiftBy & WordMask
-    val wordOffset = shiftBy >>> LogWL
-
     var significantWordCount = bs.nwords
     while (significantWordCount > 0 && bs.word(significantWordCount - 1) == 0) {
       significantWordCount -= 1
     }
 
-    if (bitOffset == 0) {
-      val newSize = significantWordCount + wordOffset
-      require(newSize <= MaxSize)
-      ensureCapacity(newSize)
-      System.arraycopy(bs.elems, 0, bs.elems, wordOffset, significantWordCount)
-    } else {
-      val revBitOffset = WordLength - bitOffset
-      val extraBits = bs.elems(significantWordCount - 1) >>> revBitOffset
-      val extraWordCount = if (extraBits == 0) 0 else 1
-      val newSize = significantWordCount + wordOffset + extraWordCount
-      require(newSize <= MaxSize)
-      ensureCapacity(newSize)
-      var i = significantWordCount - 1
-      var previous = bs.elems(i)
-      while (i > 0) {
-        val current = bs.elems(i - 1)
-        bs.elems(i + wordOffset) = (current >>> revBitOffset) | (previous << bitOffset)
-        previous = current
-        i -= 1
+    if (significantWordCount > 0) {
+
+      val bitOffset = shiftBy & WordMask
+      val wordOffset = shiftBy >>> LogWL
+
+      if (bitOffset == 0) {
+        val newSize = significantWordCount + wordOffset
+        require(newSize <= MaxSize)
+        ensureCapacity(newSize)
+        System.arraycopy(bs.elems, 0, bs.elems, wordOffset, significantWordCount)
+      } else {
+        val revBitOffset = WordLength - bitOffset
+        val extraBits = bs.elems(significantWordCount - 1) >>> revBitOffset
+        val extraWordCount = if (extraBits == 0) 0 else 1
+        val newSize = significantWordCount + wordOffset + extraWordCount
+        require(newSize <= MaxSize)
+        ensureCapacity(newSize)
+        var i = significantWordCount - 1
+        var previous = bs.elems(i)
+        while (i > 0) {
+          val current = bs.elems(i - 1)
+          bs.elems(i + wordOffset) = (current >>> revBitOffset) | (previous << bitOffset)
+          previous = current
+          i -= 1
+        }
+        bs.elems(wordOffset) = previous << bitOffset
+        if (extraWordCount != 0) bs.elems(newSize - 1) = extraBits
       }
-      bs.elems(wordOffset) = previous << bitOffset
-      if (extraWordCount != 0) bs.elems(newSize - 1) = extraBits
+
+      java.util.Arrays.fill(bs.elems, 0, wordOffset, 0)
     }
-    java.util.Arrays.fill(bs.elems, 0, wordOffset, 0)
   }
 
   private def shiftRightInPlace(shiftBy: Int): Unit = {
