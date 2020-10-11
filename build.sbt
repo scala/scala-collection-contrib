@@ -16,7 +16,7 @@ lazy val collectionContrib = crossProject(JVMPlatform, JSPlatform)
     testOptions += Tests.Argument(TestFrameworks.JUnit, "-q", "-v", "-s", "-a"),
     parallelExecution in Test := false,  // why?
     libraryDependencies ++= Seq(
-      "junit"            % "junit"           % "4.13"   % Test,
+      "junit"            % "junit"           % "4.13.1"   % Test,
       "com.novocode"     % "junit-interface" % "0.11"   % Test,
       "org.openjdk.jol"  % "jol-core"        % "0.13"    % Test
     ),
