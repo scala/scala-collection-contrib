@@ -265,7 +265,7 @@ class IteratorDecorator[A](val `this`: Iterator[A]) extends AnyVal {
         }
       }
 
-      override def next(): A = wrapped.next
+      override def next(): A = wrapped.next()
     }
   }
 }

@@ -91,7 +91,7 @@ class IteratorDecoratorTest {
   def splitByShouldHonorEmptyIterator(): Unit = {
     val groupedIterator = Iterator.empty.splitBy(identity)
     Assert.assertFalse(groupedIterator.hasNext)
-    Assert.assertEquals(Try(Iterator.empty.next()).toString, Try(groupedIterator.next).toString)
+    Assert.assertEquals(Try(Iterator.empty.next()).toString, Try(groupedIterator.next()).toString)
   }
 
   @Test
@@ -99,9 +99,9 @@ class IteratorDecoratorTest {
     val value = Vector("1", "1", "1")
     val groupedIterator = value.iterator.splitBy(identity)
     Assert.assertTrue(groupedIterator.hasNext)
-    Assert.assertEquals(value, groupedIterator.next.toVector)
+    Assert.assertEquals(value, groupedIterator.next().toVector)
     Assert.assertFalse(groupedIterator.hasNext)
-    Assert.assertEquals(Try(Iterator.empty.next()).toString, Try(groupedIterator.next).toString)
+    Assert.assertEquals(Try(Iterator.empty.next()).toString, Try(groupedIterator.next()).toString)
   }
 
   @Test
@@ -109,15 +109,15 @@ class IteratorDecoratorTest {
     val value = Vector("1", "2", "2", "3", "3", "3", "2", "2")
     val groupedIterator = value.iterator.splitBy(identity)
     Assert.assertTrue(groupedIterator.hasNext)
-    Assert.assertEquals(Vector("1"), groupedIterator.next.toVector)
+    Assert.assertEquals(Vector("1"), groupedIterator.next().toVector)
     Assert.assertTrue(groupedIterator.hasNext)
-    Assert.assertEquals(Vector("2", "2"), groupedIterator.next.toVector)
+    Assert.assertEquals(Vector("2", "2"), groupedIterator.next().toVector)
     Assert.assertTrue(groupedIterator.hasNext)
-    Assert.assertEquals(Vector("3", "3", "3"), groupedIterator.next.toVector)
+    Assert.assertEquals(Vector("3", "3", "3"), groupedIterator.next().toVector)
     Assert.assertTrue(groupedIterator.hasNext)
-    Assert.assertEquals(Vector("2", "2"), groupedIterator.next.toVector)
+    Assert.assertEquals(Vector("2", "2"), groupedIterator.next().toVector)
     Assert.assertFalse(groupedIterator.hasNext)
-    Assert.assertEquals(Try(Iterator.empty.next()).toString, Try(groupedIterator.next).toString)
+    Assert.assertEquals(Try(Iterator.empty.next()).toString, Try(groupedIterator.next()).toString)
   }
 
   @Test
