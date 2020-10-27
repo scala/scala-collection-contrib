@@ -1,11 +1,13 @@
-import sbtcrossproject.CrossPlugin.autoImport.{CrossType, crossProject}
-
-// With CrossType.Pure, the root project also picks up the sources in `src`
-Compile/sources := Nil
-Test/sources := Nil
+lazy val root = project.in(file("."))
+  .aggregate(collectionContrib.jvm, collectionContrib.js)
+  .settings(
+    publish / skip := true,
+    // With CrossType.Pure, the root project also picks up the sources in `src`
+    Compile / unmanagedSourceDirectories := Nil,
+    Test    / unmanagedSourceDirectories := Nil,
+  )
 
 lazy val collectionContrib = crossProject(JVMPlatform, JSPlatform)
-  .withoutSuffixFor(JVMPlatform)
   .crossType(CrossType.Pure)
   .in(file("."))
   .settings(ScalaModulePlugin.scalaModuleSettings)
@@ -16,12 +18,10 @@ lazy val collectionContrib = crossProject(JVMPlatform, JSPlatform)
     testOptions += Tests.Argument(TestFrameworks.JUnit, "-q", "-v", "-s", "-a"),
     parallelExecution in Test := false,  // why?
     libraryDependencies ++= Seq(
-      "junit"            % "junit"           % "4.13.1"   % Test,
+      "junit"            % "junit"           % "4.13.1" % Test,
       "com.novocode"     % "junit-interface" % "0.11"   % Test,
-      "org.openjdk.jol"  % "jol-core"        % "0.14"    % Test
+      "org.openjdk.jol"  % "jol-core"        % "0.14"   % Test
     ),
-    // https://github.com/sbt/sbt/issues/5043
-    useCoursier := false
   )
   .jvmSettings(
     scalaModuleMimaPreviousVersion := Some("0.1.0")
@@ -31,3 +31,6 @@ lazy val collectionContrib = crossProject(JVMPlatform, JSPlatform)
     // Scala.js cannot run forked tests
     fork in Test := false
   )
+
+lazy val collectionContribJVM = collectionContrib.jvm
+lazy val collectionContribJS  = collectionContrib.js
