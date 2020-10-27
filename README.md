@@ -10,19 +10,19 @@ This module provides various additions to the Scala 2.13 standard collections.
 If you're using sbt, you can add the dependency as follows:
 
 ```
-libraryDependencies += "org.scala-lang.modules" %% "scala-collection-contrib" % "0.2.1"
+libraryDependencies += "org.scala-lang.modules" %% "scala-collection-contrib" % "0.2.2"
 ```
 
-Here is the [full Scaladoc](https://static.javadoc.io/org.scala-lang.modules/scala-collection-contrib_2.13/0.2.1/scala/collection/index.html).
+Here is the [full Scaladoc](https://static.javadoc.io/org.scala-lang.modules/scala-collection-contrib_2.13/0.2.2/scala/collection/index.html).
 
 ### New collection types
 
 These collections are in the `scala.collection` package.
 
-- [`MultiSet`](https://static.javadoc.io/org.scala-lang.modules/scala-collection-contrib_2.13/0.2.1/scala/collection/MultiSet.html) (both [mutable](https://static.javadoc.io/org.scala-lang.modules/scala-collection-contrib_2.13/0.2.1/scala/collection/mutable/MultiSet.html) and [immutable](https://static.javadoc.io/org.scala-lang.modules/scala-collection-contrib_2.13/0.2.1/scala/collection/immutable/MultiSet.html))
-- [`SortedMultiSet`](https://static.javadoc.io/org.scala-lang.modules/scala-collection-contrib_2.13/0.2.1/scala/collection/SortedMultiSet.html) (both [mutable](https://static.javadoc.io/org.scala-lang.modules/scala-collection-contrib_2.13/0.2.1/scala/collection/mutable/SortedMultiSet.html) and [immutable](https://static.javadoc.io/org.scala-lang.modules/scala-collection-contrib_2.13/0.2.1/scala/collection/immutable/SortedMultiSet.html))
-- [`MultiDict`](https://static.javadoc.io/org.scala-lang.modules/scala-collection-contrib_2.13/0.2.1/scala/collection/MultiDict.html) (both [mutable](https://static.javadoc.io/org.scala-lang.modules/scala-collection-contrib_2.13/0.2.1/scala/collection/mutable/MultiDict.html) and [immutable](https://static.javadoc.io/org.scala-lang.modules/scala-collection-contrib_2.13/0.2.1/scala/collection/immutable/MultiDict.html))
-- [`SortedMultiDict`](https://static.javadoc.io/org.scala-lang.modules/scala-collection-contrib_2.13/0.2.1/scala/collection/SortedMultiDict.html) (both [mutable](https://static.javadoc.io/org.scala-lang.modules/scala-collection-contrib_2.13/0.2.1/scala/collection/mutable/SortedMultiDict.html) and [immutable](https://static.javadoc.io/org.scala-lang.modules/scala-collection-contrib_2.13/0.2.1/scala/collection/immutable/SortedMultiDict.html))
+- [`MultiSet`](https://static.javadoc.io/org.scala-lang.modules/scala-collection-contrib_2.13/0.2.2/scala/collection/MultiSet.html) (both [mutable](https://static.javadoc.io/org.scala-lang.modules/scala-collection-contrib_2.13/0.2.2/scala/collection/mutable/MultiSet.html) and [immutable](https://static.javadoc.io/org.scala-lang.modules/scala-collection-contrib_2.13/0.2.2/scala/collection/immutable/MultiSet.html))
+- [`SortedMultiSet`](https://static.javadoc.io/org.scala-lang.modules/scala-collection-contrib_2.13/0.2.2/scala/collection/SortedMultiSet.html) (both [mutable](https://static.javadoc.io/org.scala-lang.modules/scala-collection-contrib_2.13/0.2.2/scala/collection/mutable/SortedMultiSet.html) and [immutable](https://static.javadoc.io/org.scala-lang.modules/scala-collection-contrib_2.13/0.2.2/scala/collection/immutable/SortedMultiSet.html))
+- [`MultiDict`](https://static.javadoc.io/org.scala-lang.modules/scala-collection-contrib_2.13/0.2.2/scala/collection/MultiDict.html) (both [mutable](https://static.javadoc.io/org.scala-lang.modules/scala-collection-contrib_2.13/0.2.2/scala/collection/mutable/MultiDict.html) and [immutable](https://static.javadoc.io/org.scala-lang.modules/scala-collection-contrib_2.13/0.2.2/scala/collection/immutable/MultiDict.html))
+- [`SortedMultiDict`](https://static.javadoc.io/org.scala-lang.modules/scala-collection-contrib_2.13/0.2.2/scala/collection/SortedMultiDict.html) (both [mutable](https://static.javadoc.io/org.scala-lang.modules/scala-collection-contrib_2.13/0.2.2/scala/collection/mutable/SortedMultiDict.html) and [immutable](https://static.javadoc.io/org.scala-lang.modules/scala-collection-contrib_2.13/0.2.2/scala/collection/immutable/SortedMultiDict.html))
 
 ### New operations
 
