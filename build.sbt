@@ -13,6 +13,7 @@ lazy val collectionContrib = crossProject(JVMPlatform, JSPlatform)
   .settings(ScalaModulePlugin.scalaModuleSettings)
   .settings(
     name := "scala-collection-contrib",
+    scalaModuleAutomaticModuleName := Some("scala.collection.contrib"),
     scalacOptions ++= Seq("-opt-warnings", "-language:higherKinds", "-deprecation", "-feature", "-Xfatal-warnings"),
     scalacOptions in (Compile, doc) ++= Seq("-implicits", "-groups"),
     testOptions += Tests.Argument(TestFrameworks.JUnit, "-q", "-v", "-s", "-a"),
