@@ -21,7 +21,7 @@ lazy val collectionContrib = crossProject(JVMPlatform, JSPlatform)
     libraryDependencies ++= Seq(
       "junit"            % "junit"           % "4.13.2" % Test,
       "com.novocode"     % "junit-interface" % "0.11"   % Test,
-      "org.openjdk.jol"  % "jol-core"        % "0.15"   % Test
+      "org.openjdk.jol"  % "jol-core"        % "0.16"   % Test
     ),
   )
   .jvmSettings(
