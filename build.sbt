@@ -26,7 +26,7 @@ lazy val collectionContrib = crossProject(JVMPlatform, JSPlatform)
   .jvmSettings(
     scalaModuleMimaPreviousVersion := Some("0.1.0")
   )
-  .jsConfigure(_.enablePlugins(ScalaJSJUnitPlugin))
+  .jsEnablePlugins(ScalaJSJUnitPlugin)
   .jsSettings(
     // Scala.js cannot run forked tests
     fork in Test := false
