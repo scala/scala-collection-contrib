@@ -11,6 +11,7 @@ env:
   - ADOPTOPENJDK=8  SCALAJS_VERSION=
   - ADOPTOPENJDK=8  SCALAJS_VERSION=1.6.0
   - ADOPTOPENJDK=11 SCALAJS_VERSION=
+  - ADOPTOPENJDK=17 SCALAJS_VERSION=
 
 install:
   - git fetch --tags # get all tags for sbt-dynver
