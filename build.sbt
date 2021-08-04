@@ -13,6 +13,7 @@ lazy val collectionContrib = crossProject(JVMPlatform, JSPlatform)
   .settings(ScalaModulePlugin.scalaModuleSettings)
   .settings(
     name := "scala-collection-contrib",
+    versionPolicyIntention := Compatibility.BinaryCompatible,
     scalaModuleAutomaticModuleName := Some("scala.collection.contrib"),
     scalacOptions ++= Seq("-opt-warnings", "-language:higherKinds", "-deprecation", "-feature", "-Xfatal-warnings"),
     scalacOptions in (Compile, doc) ++= Seq("-implicits", "-groups"),
@@ -22,9 +23,6 @@ lazy val collectionContrib = crossProject(JVMPlatform, JSPlatform)
       "junit"            % "junit"           % "4.13.2" % Test,
       "com.novocode"     % "junit-interface" % "0.11"   % Test,
     ),
-  )
-  .jvmSettings(
-    scalaModuleMimaPreviousVersion := Some("0.1.0")
   )
   .jsEnablePlugins(ScalaJSJUnitPlugin)
   .jsSettings(
