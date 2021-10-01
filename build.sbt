@@ -16,9 +16,9 @@ lazy val collectionContrib = crossProject(JVMPlatform, JSPlatform)
     versionPolicyIntention := Compatibility.BinaryCompatible,
     scalaModuleAutomaticModuleName := Some("scala.collection.contrib"),
     scalacOptions ++= Seq("-opt-warnings", "-language:higherKinds", "-deprecation", "-feature", "-Xfatal-warnings"),
-    scalacOptions in (Compile, doc) ++= Seq("-implicits", "-groups"),
+    Compile / doc / scalacOptions ++= Seq("-implicits", "-groups"),
     testOptions += Tests.Argument(TestFrameworks.JUnit, "-q", "-v", "-s", "-a"),
-    parallelExecution in Test := false,  // why?
+    Test / parallelExecution := false,  // why?
     libraryDependencies ++= Seq(
       "junit"            % "junit"           % "4.13.2" % Test,
       "com.novocode"     % "junit-interface" % "0.11"   % Test,
@@ -27,7 +27,7 @@ lazy val collectionContrib = crossProject(JVMPlatform, JSPlatform)
   .jsEnablePlugins(ScalaJSJUnitPlugin)
   .jsSettings(
     // Scala.js cannot run forked tests
-    fork in Test := false
+    Test / fork := false
   )
 
 lazy val collectionContribJVM = collectionContrib.jvm
