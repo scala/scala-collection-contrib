@@ -23,7 +23,7 @@ lazy val collectionContrib = crossProject(JVMPlatform, JSPlatform)
     Test / parallelExecution := false,  // why?
     libraryDependencies ++= Seq(
       "junit"            % "junit"           % "4.13.2" % Test,
-      "com.novocode"     % "junit-interface" % "0.11"   % Test,
+      "com.github.sbt"   % "junit-interface" % "0.13.2" % Test,
     ),
   )
   .jsEnablePlugins(ScalaJSJUnitPlugin)
