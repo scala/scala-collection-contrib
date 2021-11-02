@@ -1,4 +1,4 @@
-ThisBuild / scalaVersion := "2.13.6"
+ThisBuild / scalaVersion := "2.13.7"
 
 lazy val root = project.in(file("."))
   .aggregate(collectionContrib.jvm, collectionContrib.js)
@@ -17,8 +17,8 @@ lazy val collectionContrib = crossProject(JVMPlatform, JSPlatform)
     name := "scala-collection-contrib",
     versionPolicyIntention := Compatibility.BinaryCompatible,
     scalaModuleAutomaticModuleName := Some("scala.collection.contrib"),
-    scalacOptions ++= Seq("-opt-warnings", "-language:higherKinds", "-deprecation", "-feature", "-Xfatal-warnings"),
-    Compile / doc / scalacOptions ++= Seq("-implicits", "-groups"),
+    Compile / compile / scalacOptions ++= Seq("-opt-warnings", "-language:higherKinds", "-deprecation", "-feature", "-Xfatal-warnings", "-Wconf:origin=scala.collection.IterableOps.toIterable:s"),
+    Compile / doc / scalacOptions ++= Seq("-implicits", "-groups", "-nowarn"),
     testOptions += Tests.Argument(TestFrameworks.JUnit, "-q", "-v", "-s", "-a"),
     Test / parallelExecution := false,  // why?
     libraryDependencies ++= Seq(
