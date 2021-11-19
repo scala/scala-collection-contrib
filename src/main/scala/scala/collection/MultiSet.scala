@@ -22,7 +22,7 @@ trait MultiSet[A]
   def canEqual(that: Any): Boolean = true
 
   override def equals(o: Any): Boolean = o match {
-    case that: MultiSet[A] =>
+    case that: MultiSet[A @unchecked] =>
       (this eq that) ||
         (that canEqual this) &&
           (this.size == that.size) && {

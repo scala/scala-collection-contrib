@@ -24,7 +24,7 @@ trait MultiDict[K, V]
   def canEqual(that: Any): Boolean = true
 
   override def equals(o: Any): Boolean = o match {
-    case that: MultiDict[K, V] =>
+    case that: MultiDict[K @unchecked, _] =>
       (this eq that) ||
         (that canEqual this) &&
           (this.size == that.size) && {
