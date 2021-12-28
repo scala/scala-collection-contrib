@@ -8,13 +8,13 @@ package object decorators {
   implicit def iteratorDecorator[A](it: Iterator[A]): IteratorDecorator[A] =
     new IteratorDecorator[A](it)
 
-  implicit def IterableDecorator[C](coll: C)(implicit it: IsIterable[C]): IterableDecorator[C, it.type] =
+  implicit def iterableDecorator[C](coll: C)(implicit it: IsIterable[C]): IterableDecorator[C, it.type] =
     new IterableDecorator(coll)(it)
 
-  implicit def SeqDecorator[C](coll: C)(implicit seq: IsSeq[C]): SeqDecorator[C, seq.type] =
+  implicit def seqDecorator[C](coll: C)(implicit seq: IsSeq[C]): SeqDecorator[C, seq.type] =
     new SeqDecorator(coll)(seq)
 
-  implicit def MapDecorator[C](coll: C)(implicit map: IsMap[C]): MapDecorator[C, map.type] =
+  implicit def mapDecorator[C](coll: C)(implicit map: IsMap[C]): MapDecorator[C, map.type] =
     new MapDecorator(coll)(map)
 
   implicit def bitSetDecorator[C <: BitSet with BitSetOps[C]](bs: C): BitSetDecorator[C] =

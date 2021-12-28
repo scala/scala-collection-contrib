@@ -69,7 +69,7 @@ object MultiDict extends MapFactory[MultiDict] {
 
   def from[K, V](source: IterableOnce[(K, V)]): MultiDict[K, V] =
     source match {
-      case mm: MultiDict[K, V] => mm
+      case mm: MultiDict[K, V] @unchecked => mm
       case _ => (newBuilder[K, V] ++= source).result()
     }
 

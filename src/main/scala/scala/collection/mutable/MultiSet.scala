@@ -16,7 +16,7 @@ trait MultiSet[A]
   override protected def newSpecificBuilder: mutable.Builder[A, MultiSet[A]] = iterableFactory.newBuilder
   override def empty: MultiSet[A] = iterableFactory.empty
 
-  override def knownSize = super[Growable].knownSize
+  override def knownSize: Int = super[Growable].knownSize
 }
 
 class MultiSetImpl[A] private[mutable] (val elems: Map[A, Int]) extends MultiSet[A] {

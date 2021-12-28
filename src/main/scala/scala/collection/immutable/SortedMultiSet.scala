@@ -55,7 +55,7 @@ object SortedMultiSet extends SortedIterableFactory[SortedMultiSet] {
 
   def from[A: Ordering](source: IterableOnce[A]): SortedMultiSet[A] =
     source match {
-      case sms: SortedMultiSet[A] => sms
+      case sms: SortedMultiSet[A] @unchecked => sms
       case _ => (newBuilder[A] ++= source).result()
     }
 

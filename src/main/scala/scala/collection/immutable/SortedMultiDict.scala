@@ -72,7 +72,7 @@ object SortedMultiDict extends SortedMapFactory[SortedMultiDict] {
 
   def from[K: Ordering, V](it: IterableOnce[(K, V)]): SortedMultiDict[K, V] =
     it match {
-      case smm: SortedMultiDict[K, V] => smm
+      case smm: SortedMultiDict[K, V] @unchecked => smm
       case _ => (newBuilder[K, V] ++= it).result()
     }
 
