@@ -71,12 +71,12 @@ class SeqDecorator[C, S <: IsSeq[C]](coll: C)(implicit val seq: S) {
 
   /** Considers the sequence circular and rotates it right by `step` places.
    *
-   * @param step the number of places to rotate to the right
+   * @param step the number of places to be rotated to the right
    * @tparam B the element type of the returned collection
    * @return a new collection consisting of all elements of this collection
    *         circularly rotated by `step` places to the right.
    * @example {{{
-   *      List(1, 2, 3, 4).rotateRight(1) => List(2, 3, 4, 1)
+   *      List(1, 2, 3, 4, 5).rotateRight(1) => List(2, 3, 4, 5, 1)
    * }}}
    */
   def rotateRight[B >: seq.A, That](step: Int)(implicit bf: BuildFrom[C, B, That]): That =
@@ -90,25 +90,25 @@ class SeqDecorator[C, S <: IsSeq[C]](coll: C)(implicit val seq: S) {
 
   /** Considers the sequence circular and rotates it left by `step` places.
    *
-   * @param step the number of places to rotate to the left
+   * @param step the number of places to be rotated to the left
    * @tparam B the element type of the returned collection
    * @return a new collection consisting of all elements of this collection
    *         circularly rotated by `step` places to the left.
    * @example {{{
-   *      List(1, 2, 3, 4).rotateLeft(1) => List(4, 1, 2, 3)
+   *      List(1, 2, 3, 4, 5).rotateLeft(1) => List(4, 5, 1, 2, 3)
    * }}}
    */
   def rotateLeft[B >: seq.A, That](step: Int)(implicit bf: BuildFrom[C, B, That]): That =
     rotateRight(-step)
 
-  /** Considers the sequence circular and move its head to the `i` circular index.
+  /** Considers the sequence circular and rotates it to start with the element at `i` circular index.
    *
-   * @param i the circular index of the element at the start of the new collection
+   * @param i the circular index of the element to be rotated at the start of the new collection
    * @tparam B the element type of the returned collection
    * @return a new collection consisting of all elements of this collection
-   *         circularly rotated so that the head element is at circular index `i`.
+   *         circularly rotated so to start with the element at circular index `i`.
    * @example {{{
-   *      List(1, 2, 3, 4).startAt(-1) => List(2, 3, 4, 1)
+   *      List(1, 2, 3, 4, 5).startAt(2) => List(3, 4, 5, 1, 2)
    * }}}
    */
   def startAt[B >: seq.A, That](i: IndexO)(implicit bf: BuildFrom[C, B, That]): That =
