@@ -45,4 +45,22 @@ class SeqDecoratorTest {
     assertEquals(s.replaced(3, 4), Seq(1, 2, 4, 2, 1))
     assertEquals(s.replaced(4, 4), s)
   }
+
+  @Test def testRotatedRight(): Unit = {
+    val s = Seq(1, 2, 3, 2, 1)
+    val string = "RING"
+    assertEquals(s.rotateRight(1), Seq(1, 1, 2, 3, 2))
+    assertEquals(string.rotateRight(1).mkString, "GRIN")
+  }
+
+  @Test def testRotatedLeft(): Unit = {
+    val s = Seq(1, 2, 3, 2, 1)
+    assertEquals(s.rotateLeft(1), Seq(2, 3, 2, 1, 1))
+  }
+
+  @Test def testStartedAt(): Unit = {
+    val s = Seq(1, 2, 3, 2, 1)
+    assertEquals(s.startAt(1), Seq(2, 3, 2, 1, 1))
+  }
+
 }
