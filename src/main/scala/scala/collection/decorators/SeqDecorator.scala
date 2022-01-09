@@ -81,11 +81,10 @@ class SeqDecorator[C, S <: IsSeq[C]](coll: C)(implicit val seq: S) {
    */
   def rotateRight[B >: seq.A, That](step: Int)(implicit bf: BuildFrom[C, B, That]): That =
     if (seq(coll).isEmpty)
-      bf.fromSpecific(coll)(new collection.View.Map(seq(coll), (a: seq.A) => a))
+      bf.fromSpecific(coll)(collection.View.Empty)
     else {
       val j: Index = seq(coll).size - index(step)
-      bf.fromSpecific(coll)(new collection.View.Drop(seq(coll), j) ++
-        new collection.View.Take(seq(coll), j))
+      bf.fromSpecific(coll)(new collection.View.Drop(seq(coll), j) ++ new collection.View.Take(seq(coll), j))
     }
 
   /** Considers the sequence circular and rotates it left by `step` places.
