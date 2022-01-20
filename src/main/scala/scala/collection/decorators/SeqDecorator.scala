@@ -76,7 +76,7 @@ class SeqDecorator[C, S <: IsSeq[C]](coll: C)(implicit val seq: S) {
    * @return a new collection consisting of all elements of this collection
    *         circularly rotated by `step` places to the right.
    * @example {{{
-   *      List(1, 2, 3, 4, 5).rotateRight(1) => List(2, 3, 4, 5, 1)
+   *      List(1, 2, 3, 4, 5).rotateRight(1) => List(5, 1, 2, 3, 4)
    * }}}
    */
   def rotateRight[B >: seq.A, That](step: Int)(implicit bf: BuildFrom[C, B, That]): That =
@@ -94,7 +94,7 @@ class SeqDecorator[C, S <: IsSeq[C]](coll: C)(implicit val seq: S) {
    * @return a new collection consisting of all elements of this collection
    *         circularly rotated by `step` places to the left.
    * @example {{{
-   *      List(1, 2, 3, 4, 5).rotateLeft(1) => List(4, 5, 1, 2, 3)
+   *      List(1, 2, 3, 4, 5).rotateLeft(1) => List(2, 3, 4, 5, 1)
    * }}}
    */
   def rotateLeft[B >: seq.A, That](step: Int)(implicit bf: BuildFrom[C, B, That]): That =
