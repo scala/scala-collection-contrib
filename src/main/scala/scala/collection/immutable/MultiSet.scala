@@ -78,7 +78,7 @@ object MultiSet extends IterableFactory[MultiSet] {
 
   def from[A](source: IterableOnce[A]): MultiSet[A] =
     source match {
-      case ms: MultiSet[A] => ms
+      case ms: MultiSet[A] @unchecked => ms
       case _ => (newBuilder[A] ++= source).result()
     }
 

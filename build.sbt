@@ -1,4 +1,5 @@
-ThisBuild / scalaVersion := "2.13.8"
+ThisBuild / scalaVersion := "3.1.2-RC1"
+ThisBuild / crossScalaVersions := Seq((ThisBuild / scalaVersion).value, "2.13.8")
 
 lazy val root = project.in(file("."))
   .aggregate(collectionContrib.jvm, collectionContrib.js)
@@ -15,10 +16,20 @@ lazy val collectionContrib = crossProject(JVMPlatform, JSPlatform)
   .settings(ScalaModulePlugin.scalaModuleSettings)
   .settings(
     name := "scala-collection-contrib",
-    versionPolicyIntention := Compatibility.BinaryCompatible,
+    versionPolicyIntention := Compatibility.None,
     scalaModuleAutomaticModuleName := Some("scala.collection.contrib"),
-    Compile / compile / scalacOptions ++= Seq("-opt-warnings", "-language:higherKinds", "-deprecation", "-feature", "-Xfatal-warnings", "-Wconf:origin=scala.collection.IterableOps.toIterable:s"),
-    Compile / doc / scalacOptions ++= Seq("-implicits", "-groups", "-nowarn"),
+    Compile / compile / scalacOptions ++= {
+      CrossVersion.partialVersion(scalaVersion.value) match {
+        case Some((2, _)) => Seq("-opt-warnings", "-Werror", "-Wconf:origin=scala.collection.IterableOps.toIterable:s")
+        case Some((3, _)) => Seq("-Xfatal-warnings", "-Yscala-release:3.0", "-Wconf:cat=deprecation:s")
+      }
+    },
+    Compile / doc / scalacOptions ++= {
+      CrossVersion.partialVersion(scalaVersion.value) match {
+        case Some((2, _)) => Seq("-implicits", "-groups", "-nowarn")
+        case Some((3, _)) => Seq.empty
+      }
+    },
     testOptions += Tests.Argument(TestFrameworks.JUnit, "-q", "-v", "-s", "-a"),
     Test / parallelExecution := false,  // why?
     libraryDependencies ++= Seq(
