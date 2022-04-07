@@ -53,7 +53,7 @@ class SeqDecoratorTest {
     assertEquals(s.rotateRight(6), sRotated)
     assertEquals(s.rotateRight(-4), sRotated)
     val string = "RING"
-    assertEquals(string.rotateRight(1).mkString, "GRIN")
+    assertEquals(string.rotateRight(1), "GRIN")
     val empty = Vector.empty[Int]
     assertEquals(empty.rotateRight(1), empty)
   }
