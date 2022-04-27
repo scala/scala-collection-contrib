@@ -1,4 +1,4 @@
-ThisBuild / scalaVersion := "3.1.2-RC1"
+ThisBuild / scalaVersion := "3.1.3-RC2"
 ThisBuild / crossScalaVersions := Seq((ThisBuild / scalaVersion).value, "2.13.8")
 
 lazy val root = project.in(file("."))
@@ -21,7 +21,7 @@ lazy val collectionContrib = crossProject(JVMPlatform, JSPlatform)
     Compile / compile / scalacOptions ++= {
       CrossVersion.partialVersion(scalaVersion.value) match {
         case Some((2, _)) => Seq("-opt-warnings", "-Werror", "-Wconf:origin=scala.collection.IterableOps.toIterable:s")
-        case Some((3, _)) => Seq("-Xfatal-warnings", "-Yscala-release:3.0", "-Wconf:cat=deprecation:s")
+        case Some((3, _)) => Seq("-Xfatal-warnings", "-scala-output-version:3.0", "-Wconf:cat=deprecation:s")
       }
     },
     Compile / doc / scalacOptions ++= {
