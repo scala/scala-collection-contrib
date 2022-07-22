@@ -21,13 +21,13 @@ lazy val collectionContrib = crossProject(JVMPlatform, JSPlatform)
     Compile / compile / scalacOptions ++= {
       CrossVersion.partialVersion(scalaVersion.value) match {
         case Some((2, _)) => Seq("-opt-warnings", "-Werror", "-Wconf:origin=scala.collection.IterableOps.toIterable:s")
-        case Some((3, _)) => Seq("-Xfatal-warnings", "-scala-output-version:3.0", "-Wconf:cat=deprecation:s")
+        case _            => Seq("-Xfatal-warnings", "-scala-output-version:3.0", "-Wconf:cat=deprecation:s")
       }
     },
     Compile / doc / scalacOptions ++= {
       CrossVersion.partialVersion(scalaVersion.value) match {
         case Some((2, _)) => Seq("-implicits", "-groups", "-nowarn")
-        case Some((3, _)) => Seq.empty
+        case _            => Seq.empty
       }
     },
     testOptions += Tests.Argument(TestFrameworks.JUnit, "-q", "-v", "-s", "-a"),
