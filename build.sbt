@@ -43,6 +43,10 @@ lazy val collectionContrib = crossProject(JVMPlatform, JSPlatform, NativePlatfor
     Test / fork := false
   )
   .nativeEnablePlugins(ScalaNativeJUnitPlugin)
+  .nativeSettings(
+    // Scala native cannot run forked tests
+    Test / fork := false
+  )
 
 lazy val collectionContribJVM    = collectionContrib.jvm
 lazy val collectionContribJS     = collectionContrib.js
