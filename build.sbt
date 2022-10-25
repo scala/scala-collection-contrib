@@ -21,7 +21,7 @@ lazy val collectionContrib = crossProject(JVMPlatform, JSPlatform, NativePlatfor
     Compile / compile / scalacOptions ++= {
       CrossVersion.partialVersion(scalaVersion.value) match {
         case Some((2, _)) => Seq("-opt-warnings", "-Werror", "-Wconf:origin=scala.collection.IterableOps.toIterable:s")
-        case _            => Seq("-Xfatal-warnings", /*"-scala-output-version:3.0",*/ "-Wconf:cat=deprecation:s")
+        case _            => Seq("-Xfatal-warnings", "-Wconf:cat=deprecation:s")
       }
     },
     Compile / doc / scalacOptions ++= {
@@ -43,9 +43,6 @@ lazy val collectionContrib = crossProject(JVMPlatform, JSPlatform, NativePlatfor
     Test / fork := false
   )
   .nativeEnablePlugins(ScalaNativeJUnitPlugin)
-  .nativeSettings(
-    Test / fork := false // is this needed?
-  )
 
 lazy val collectionContribJVM    = collectionContrib.jvm
 lazy val collectionContribJS     = collectionContrib.js
