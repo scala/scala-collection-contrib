@@ -198,7 +198,7 @@ trait MultiDictOps[K, V, +CC[X, Y] <: MultiDict[X, Y], +C <: MultiDict[K, V]]
   def filterSets(p: ((K, Set[V])) => Boolean): C =
     fromSpecificSets(new View.Filter(sets, p, isFlipped = false))
 
-  override def addString(sb: StringBuilder, start: String, sep: String, end: String): StringBuilder =
+  override def addString(sb: StringBuilder, start: String, sep: String, end: String): sb.type =
     iterator.map { case (k, v) => s"$k -> $v" }.addString(sb, start, sep, end)
 }
 
