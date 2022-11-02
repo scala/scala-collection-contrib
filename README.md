@@ -54,10 +54,3 @@ participating, please jump right in on issues and pull requests.
 scala-collection-contrib's merge policy is liberal: we're happy to merge most things here, without too much review, so that people can try them out.
 
 There is now (as of October 2020) the [scala-library-next repo](https://github.com/scala/scala-library-next), which is where we decide what will actually be added to the next version of the Scala standard library. The standards for merging things there are much more conservative.
-
-## Releasing
-
-As with other Scala standard modules, build and release infrastructure
-is provided by the
-[sbt-scala-module](https://github.com/scala/sbt-scala-module/) sbt
-plugin.
