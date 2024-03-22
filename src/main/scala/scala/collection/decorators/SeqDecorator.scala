@@ -55,4 +55,62 @@ class SeqDecorator[C, S <: IsSeq[C]](coll: C)(implicit val seq: S) {
     */
   def replaced[B >: seq.A, That](elem: B, replacement: B)(implicit bf: BuildFrom[C, B, That]): That =
     bf.fromSpecific(coll)(new collection.View.Map(seq(coll), (a: seq.A) => if (a == elem) replacement else a))
+
+  /**
+   * for improved readability, the integer index of an element in a Seq
+   */
+  type Index = Int
+
+  /**
+   * the integer index of an element in a circular Seq, any value is valid
+   */
+  type IndexO = Int
+
+  private def index(i: IndexO): Index =
+    java.lang.Math.floorMod(i, seq(coll).size)
+
+  /** Considers the sequence circular and rotates it right by `step` places.
+   *
+   * @param step the number of places to be rotated to the right
+   * @tparam B the element type of the returned collection
+   * @return a new collection consisting of all elements of this collection
+   *         circularly rotated by `step` places to the right.
+   * @example {{{
+   *      List(1, 2, 3, 4, 5).rotateRight(1) => List(5, 1, 2, 3, 4)
+   * }}}
+   */
+  def rotateRight[B >: seq.A, That](step: Int)(implicit bf: BuildFrom[C, B, That]): That =
+    if (seq(coll).isEmpty)
+      bf.fromSpecific(coll)(collection.View.Empty)
+    else {
+      val j: Index = seq(coll).size - index(step)
+      bf.fromSpecific(coll)(new collection.View.Drop(seq(coll), j) ++ new collection.View.Take(seq(coll), j))
+    }
+
+  /** Considers the sequence circular and rotates it left by `step` places.
+   *
+   * @param step the number of places to be rotated to the left
+   * @tparam B the element type of the returned collection
+   * @return a new collection consisting of all elements of this collection
+   *         circularly rotated by `step` places to the left.
+   * @example {{{
+   *      List(1, 2, 3, 4, 5).rotateLeft(1) => List(2, 3, 4, 5, 1)
+   * }}}
+   */
+  def rotateLeft[B >: seq.A, That](step: Int)(implicit bf: BuildFrom[C, B, That]): That =
+    rotateRight(-step)
+
+  /** Considers the sequence circular and rotates it to start with the element at `i` circular index.
+   *
+   * @param i the circular index of the element to be rotated at the start of the new collection
+   * @tparam B the element type of the returned collection
+   * @return a new collection consisting of all elements of this collection
+   *         circularly rotated so to start with the element at circular index `i`.
+   * @example {{{
+   *      List(1, 2, 3, 4, 5).startAt(2) => List(3, 4, 5, 1, 2)
+   * }}}
+   */
+  def startAt[B >: seq.A, That](i: IndexO)(implicit bf: BuildFrom[C, B, That]): That =
+    rotateLeft(i)
+
 }
