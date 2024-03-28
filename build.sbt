@@ -1,4 +1,4 @@
-ThisBuild / scalaVersion := "3.3.1"
+ThisBuild / scalaVersion := "3.3.3"
 ThisBuild / crossScalaVersions := Seq((ThisBuild / scalaVersion).value, "2.13.13")
 
 lazy val root = project.in(file("."))
