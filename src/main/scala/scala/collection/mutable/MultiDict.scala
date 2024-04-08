@@ -2,11 +2,10 @@ package scala
 package collection
 package mutable
 
-/**
-  * A mutable multidict
-  * @tparam K the type of keys
-  * @tparam V the type of values
-  */
+/** A mutable multidict.
+ *  @tparam K the type of keys
+ *  @tparam V the type of values
+ */
 class MultiDict[K, V] private (elems: Map[K, Set[V]])
   extends collection.MultiDict[K, V]
     with Iterable[(K, V)]
@@ -27,7 +26,7 @@ class MultiDict[K, V] private (elems: Map[K, Set[V]])
 
   def addOne(elem: (K, V)): this.type = {
     val (k, v) = elem
-    elems.updateWith(k) {
+    val _ = elems.updateWith(k) {
       case None     => Some(Set(v))
       case Some(vs) => Some(vs += v)
     }
@@ -36,7 +35,7 @@ class MultiDict[K, V] private (elems: Map[K, Set[V]])
 
   def subtractOne(elem: (K, V)): this.type = {
     val (k, v) = elem
-    elems.updateWith(k) {
+    val _ = elems.updateWith(k) {
       case Some(vs) =>
         vs -= v
         if (vs.nonEmpty) Some(vs) else None

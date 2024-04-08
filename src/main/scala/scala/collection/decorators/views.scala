@@ -4,7 +4,7 @@ package decorators
 /** Views used by decorators */
 object View {
 
-  type SomeIterableOps[+A] = IterableOps[A, AnyConstr, _]
+  type SomeIterableOps[+A] = IterableOps[A, AnyConstr, ?]
 
   class Intersperse[A](underlying: SomeIterableOps[A], sep: A) extends View[A] {
     def iterator: Iterator[A] = underlying.iterator.intersperse(sep)

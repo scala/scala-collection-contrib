@@ -28,7 +28,7 @@ class SortedMultiSet[A] private (elems: SortedMap[A, Int])(implicit val ordering
     new SortedMultiSet(elems.rangeImpl(from, until))
 
   def addOne(elem: A): this.type = {
-    elems.updateWith(elem) {
+    val _ = elems.updateWith(elem) {
       case None    => Some(1)
       case Some(n) => Some(n + 1)
     }
@@ -36,7 +36,7 @@ class SortedMultiSet[A] private (elems: SortedMap[A, Int])(implicit val ordering
   }
 
   def subtractOne(elem: A): this.type = {
-    elems.updateWith(elem) {
+    val _ = elems.updateWith(elem) {
       case Some(n) => if (n > 1) Some(n - 1) else None
       case None => None
     }

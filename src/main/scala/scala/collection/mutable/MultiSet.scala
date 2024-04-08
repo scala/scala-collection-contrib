@@ -24,7 +24,7 @@ class MultiSetImpl[A] private[mutable] (val elems: Map[A, Int]) extends MultiSet
   def occurrences: collection.Map[A, Int] = elems
 
   def addOne(elem: A): this.type = {
-    elems.updateWith(elem) {
+    val _ = elems.updateWith(elem) {
       case None    => Some(1)
       case Some(n) => Some(n + 1)
     }
@@ -32,7 +32,7 @@ class MultiSetImpl[A] private[mutable] (val elems: Map[A, Int]) extends MultiSet
   }
 
   def subtractOne(elem: A): this.type = {
-    elems.updateWith(elem) {
+    val _ = elems.updateWith(elem) {
       case Some(n) => if (n > 1) Some(n - 1) else None
       case None => None
     }
