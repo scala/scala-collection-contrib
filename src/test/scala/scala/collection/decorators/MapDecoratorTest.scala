@@ -74,4 +74,92 @@ class MapDecoratorTest {
 //    Assert.assertEquals(expected, zipped2)
   }
 
+  @Test
+  def mergingByKeyPerformsFullOuterJoin(): Unit = {
+    val arthur = "arthur.txt"
+
+    val tyson = "tyson.txt"
+
+    val sandra = "sandra.txt"
+
+    val allKeys = Set(arthur, tyson, sandra)
+
+    val sharedValue = 1
+
+    val ourChanges = Map(
+      (
+        arthur,
+        sharedValue
+      ),
+      (
+        tyson,
+        2
+      )
+    )
+
+    {
+      // In this test case, none of the associated values collide across keys...
+
+      val theirChanges = Map(
+        (
+          arthur,
+          sharedValue
+        ),
+        (
+          sandra,
+          3
+        )
+      )
+
+      Assert.assertEquals("Expect the same keys to appear in the join taken either way around.", ourChanges.mergeByKey(theirChanges).keySet, theirChanges
+        .mergeByKey(ourChanges)
+        .keys)
+
+      Assert.assertTrue("Expect the same associated values to appear in the join taken either way around, albeit swapped around and not necessarily in the same key order.",
+        ourChanges
+          .mergeByKey(theirChanges)
+          .values
+          .map(_.swap)
+          .toList
+          .sorted
+          .sameElements(theirChanges.mergeByKey(ourChanges).values.toList.sorted))
+
+      Assert.assertEquals("Expect all the keys to appear in an outer join.", ourChanges.mergeByKey(theirChanges).keys, allKeys)
+
+      Assert.assertEquals("Expect all the keys to appear in an outer join.", theirChanges.mergeByKey(ourChanges).keys, allKeys)
+    }
+
+    {
+      // In this test case, associated values collide across keys...
+
+      val theirChangesRedux = Map(
+        (
+          arthur,
+          sharedValue
+        ),
+        (
+          sandra,
+          sharedValue
+        )
+      )
+
+      Assert.assertEquals("Expect the same keys to appear in the join taken either way around.", ourChanges.mergeByKey(theirChangesRedux).keySet, theirChangesRedux
+        .mergeByKey(ourChanges)
+        .keys)
+
+      Assert.assertTrue("Expect the same associated values to appear in the join taken either way around, albeit swapped around and not necessarily in the same key order.",
+        ourChanges
+          .mergeByKey(theirChangesRedux)
+          .values
+          .map(_.swap)
+          .toList
+          .sorted
+          .sameElements(theirChangesRedux.mergeByKey(ourChanges).values.toList.sorted))
+
+      Assert.assertEquals("Expect all the keys to appear in an outer join.", ourChanges.mergeByKey(theirChangesRedux).keys, allKeys)
+
+      Assert.assertEquals("Expect all the keys to appear in an outer join.", theirChangesRedux.mergeByKey(ourChanges).keys, allKeys)
+    }
+  }
+
 }
