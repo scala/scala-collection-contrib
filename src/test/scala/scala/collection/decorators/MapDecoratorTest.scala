@@ -97,7 +97,7 @@ class MapDecoratorTest {
       )
     )
 
-    {
+    locally {
       // In this test case, none of the associated values collide across keys...
 
       val theirChanges = Map(
@@ -129,7 +129,7 @@ class MapDecoratorTest {
       Assert.assertEquals("Expect all the keys to appear in an outer join.", theirChanges.mergeByKey(ourChanges).keys, allKeys)
     }
 
-    {
+    locally {
       // In this test case, associated values collide across keys...
 
       val theirChangesRedux = Map(
