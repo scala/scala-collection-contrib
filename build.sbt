@@ -1,5 +1,5 @@
 ThisBuild / scalaVersion := "3.3.3"
-ThisBuild / crossScalaVersions := Seq((ThisBuild / scalaVersion).value, "2.13.13")
+ThisBuild / crossScalaVersions := Seq((ThisBuild / scalaVersion).value, "2.13.14")
 
 lazy val root = project.in(file("."))
   .aggregate(collectionContrib.jvm, collectionContrib.js, collectionContrib.native)
