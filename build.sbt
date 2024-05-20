@@ -1,5 +1,5 @@
 ThisBuild / scalaVersion := "3.3.3"
-ThisBuild / crossScalaVersions := Seq((ThisBuild / scalaVersion).value, "2.13.13")
+ThisBuild / crossScalaVersions := Seq((ThisBuild / scalaVersion).value, "2.13.14")
 
 lazy val root = project.in(file("."))
   .aggregate(collectionContrib.jvm, collectionContrib.js, collectionContrib.native)
@@ -30,7 +30,7 @@ lazy val collectionContrib = crossProject(JVMPlatform, JSPlatform, NativePlatfor
         case _            => Seq.empty
       }
     },
-    testOptions += Tests.Argument(TestFrameworks.JUnit, "-q", "-v", "-s", "-a"),
+    testOptions += Tests.Argument(TestFrameworks.JUnit, "-v", "-s", "-a"),
     Test / parallelExecution := false,  // why?
     libraryDependencies ++= Seq(
       "junit"            % "junit"           % "4.13.2" % Test,
