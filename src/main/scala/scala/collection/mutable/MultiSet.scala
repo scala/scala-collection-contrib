@@ -31,9 +31,9 @@ class MultiSetImpl[A] private[mutable] (elems: Map[A, AtomicInteger]) extends Mu
   }
 
   def subtractOne(elem: A): this.type = {
-    val _ = elems.updateWith(elem) {
-      case existing @ Some(n) => if (n.decrementAndGet <= 0) None else existing
-      case _ => None
+    elems.get(elem) match {
+      case Some(n) => if (n.decrementAndGet <= 0) elems.subtractOne(elem)
+      case _ =>
     }
     this
   }

@@ -33,11 +33,11 @@ class MultiDict[K, V] private (elems: Map[K, Set[V]])
 
   def subtractOne(elem: (K, V)): this.type = {
     val (k, v) = elem
-    val _ = elems.updateWith(k) {
-      case existing @ Some(vs) =>
+    elems.get(k) match {
+      case Some(vs) =>
         vs.subtractOne(v)
-        if (vs.isEmpty) None else existing
-      case _ => None
+        if (vs.isEmpty) elems.subtractOne(k)
+      case _ =>
     }
     this
   }
