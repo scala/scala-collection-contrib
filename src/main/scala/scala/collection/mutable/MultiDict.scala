@@ -26,20 +26,18 @@ class MultiDict[K, V] private (elems: Map[K, Set[V]])
 
   def addOne(elem: (K, V)): this.type = {
     val (k, v) = elem
-    val _ = elems.updateWith(k) {
-      case None     => Some(Set(v))
-      case Some(vs) => Some(vs += v)
-    }
+    val vs = elems.getOrElseUpdate(k, Set.empty[V])
+    vs.addOne(v)
     this
   }
 
   def subtractOne(elem: (K, V)): this.type = {
     val (k, v) = elem
     val _ = elems.updateWith(k) {
-      case Some(vs) =>
-        vs -= v
-        if (vs.nonEmpty) Some(vs) else None
-      case None => None
+      case existing @ Some(vs) =>
+        vs.subtractOne(v)
+        if (vs.isEmpty) None else existing
+      case _ => None
     }
     this
   }
@@ -49,7 +47,7 @@ class MultiDict[K, V] private (elems: Map[K, Set[V]])
     * @return the collection itself
     */
   def removeKey(key: K): this.type = {
-    elems -= key
+    elems.subtractOne(key)
     this
   }
 

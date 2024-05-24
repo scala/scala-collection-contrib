@@ -2,6 +2,8 @@ package scala
 package collection
 package mutable
 
+import java.util.concurrent.atomic.AtomicInteger
+
 /**
   * A mutable multiset.
   */
@@ -19,22 +21,19 @@ trait MultiSet[A]
   override def knownSize: Int = super[Growable].knownSize
 }
 
-class MultiSetImpl[A] private[mutable] (val elems: Map[A, Int]) extends MultiSet[A] {
+class MultiSetImpl[A] private[mutable] (elems: Map[A, AtomicInteger]) extends MultiSet[A] {
 
-  def occurrences: collection.Map[A, Int] = elems
+  def occurrences: collection.Map[A, Int] = elems.map { case (k, v) => (k, v.get) }
 
   def addOne(elem: A): this.type = {
-    val _ = elems.updateWith(elem) {
-      case None    => Some(1)
-      case Some(n) => Some(n + 1)
-    }
+    elems.getOrElseUpdate(elem, new AtomicInteger).getAndIncrement
     this
   }
 
   def subtractOne(elem: A): this.type = {
     val _ = elems.updateWith(elem) {
-      case Some(n) => if (n > 1) Some(n - 1) else None
-      case None => None
+      case existing @ Some(n) => if (n.decrementAndGet <= 0) None else existing
+      case _ => None
     }
     this
   }
