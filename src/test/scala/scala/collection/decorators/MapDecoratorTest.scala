@@ -113,7 +113,7 @@ class MapDecoratorTest {
 
       Assert.assertEquals("Expect the same keys to appear in the join taken either way around.", ourChanges.mergeByKey(theirChanges).keySet, theirChanges
         .mergeByKey(ourChanges)
-        .keys)
+        .keySet)
 
       Assert.assertTrue("Expect the same associated values to appear in the join taken either way around, albeit swapped around and not necessarily in the same key order.",
         ourChanges
@@ -124,9 +124,9 @@ class MapDecoratorTest {
           .sorted
           .sameElements(theirChanges.mergeByKey(ourChanges).values.toList.sorted))
 
-      Assert.assertEquals("Expect all the keys to appear in an outer join.", ourChanges.mergeByKey(theirChanges).keys, allKeys)
+      Assert.assertEquals("Expect all the keys to appear in an outer join.", ourChanges.mergeByKey(theirChanges).keySet, allKeys)
 
-      Assert.assertEquals("Expect all the keys to appear in an outer join.", theirChanges.mergeByKey(ourChanges).keys, allKeys)
+      Assert.assertEquals("Expect all the keys to appear in an outer join.", theirChanges.mergeByKey(ourChanges).keySet, allKeys)
     }
 
     locally {
@@ -145,7 +145,7 @@ class MapDecoratorTest {
 
       Assert.assertEquals("Expect the same keys to appear in the join taken either way around.", ourChanges.mergeByKey(theirChangesRedux).keySet, theirChangesRedux
         .mergeByKey(ourChanges)
-        .keys)
+        .keySet)
 
       Assert.assertTrue("Expect the same associated values to appear in the join taken either way around, albeit swapped around and not necessarily in the same key order.",
         ourChanges
@@ -156,9 +156,9 @@ class MapDecoratorTest {
           .sorted
           .sameElements(theirChangesRedux.mergeByKey(ourChanges).values.toList.sorted))
 
-      Assert.assertEquals("Expect all the keys to appear in an outer join.", ourChanges.mergeByKey(theirChangesRedux).keys, allKeys)
+      Assert.assertEquals("Expect all the keys to appear in an outer join.", ourChanges.mergeByKey(theirChangesRedux).keySet, allKeys)
 
-      Assert.assertEquals("Expect all the keys to appear in an outer join.", theirChangesRedux.mergeByKey(ourChanges).keys, allKeys)
+      Assert.assertEquals("Expect all the keys to appear in an outer join.", theirChangesRedux.mergeByKey(ourChanges).keySet, allKeys)
     }
   }
 
