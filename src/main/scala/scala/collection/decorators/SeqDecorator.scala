@@ -69,6 +69,18 @@ class SeqDecorator[C, S <: IsSeq[C]](coll: C)(implicit val seq: S) {
   private def index(i: IndexO): Index =
     java.lang.Math.floorMod(i, seq(coll).size)
 
+  /** Gets the element at some circular index.
+   *
+   * @param i circular index
+   * @return the element of the sequence at the given index
+   * @throws java.lang.ArithmeticException if the sequence is empty
+   * @example {{{
+   *      Seq(0, 1, 2).applyO(3) => 0
+   * }}}
+   */
+  def applyO(i: IndexO): this.seq.A =
+    seq(coll).apply(index(i))
+
   /** Considers the sequence circular and rotates it right by `step` places.
    *
    * @param step the number of places to be rotated to the right
@@ -99,18 +111,5 @@ class SeqDecorator[C, S <: IsSeq[C]](coll: C)(implicit val seq: S) {
    */
   def rotateLeft[B >: seq.A, That](step: Int)(implicit bf: BuildFrom[C, B, That]): That =
     rotateRight(-step)
-
-  /** Considers the sequence circular and rotates it to start with the element at `i` circular index.
-   *
-   * @param i the circular index of the element to be rotated at the start of the new collection
-   * @tparam B the element type of the returned collection
-   * @return a new collection consisting of all elements of this collection
-   *         circularly rotated so to start with the element at circular index `i`.
-   * @example {{{
-   *      List(1, 2, 3, 4, 5).startAt(2) => List(3, 4, 5, 1, 2)
-   * }}}
-   */
-  def startAt[B >: seq.A, That](i: IndexO)(implicit bf: BuildFrom[C, B, That]): That =
-    rotateLeft(i)
 
 }

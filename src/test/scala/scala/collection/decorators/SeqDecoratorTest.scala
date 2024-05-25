@@ -1,7 +1,7 @@
 package scala.collection
 package decorators
 
-import org.junit.Assert.assertEquals
+import org.junit.Assert.{assertEquals, assertSame, assertThrows}
 import org.junit.Test
 import scala.collection.immutable._
 
@@ -46,6 +46,13 @@ class SeqDecoratorTest {
     assertEquals(s.replaced(4, 4), s)
   }
 
+  @Test def testApplyO(): Unit = {
+    val s = Seq(0, 1, 2)
+    assertEquals(s.applyO(3), 0)
+    val empty = Vector.empty[Int]
+    assertThrows(classOf[java.lang.ArithmeticException], () => empty.applyO(1))
+  }
+
   @Test def testRotatedRight(): Unit = {
     val s = Seq(1, 2, 3, 2, 1)
     val sRotated = Seq(1, 1, 2, 3, 2)
@@ -64,14 +71,6 @@ class SeqDecoratorTest {
     assertEquals(s.rotateLeft(1), sRotated)
     assertEquals(s.rotateLeft(6), sRotated)
     assertEquals(s.rotateLeft(-4), sRotated)
-  }
-
-  @Test def testStartedAt(): Unit = {
-    val s = Seq(1, 2, 3, 2, 1)
-    val sRotated = Seq(2, 3, 2, 1, 1)
-    assertEquals(s.startAt(1), sRotated)
-    assertEquals(s.startAt(6), sRotated)
-    assertEquals(s.startAt(-4), sRotated)
   }
 
 }
