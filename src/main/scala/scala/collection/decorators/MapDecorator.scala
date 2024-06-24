@@ -59,16 +59,16 @@ class MapDecorator[C, M <: IsMap[C]](coll: C)(implicit val map: M) {
     */
   def mergeByKeyWith[W, X, That](other: Map[map.K, W])(f: PartialFunction[(Option[map.V], Option[W]), X])(implicit bf: BuildFrom[C, (map.K, X), That]): That = {
     val b = bf.newBuilder(coll)
-    val traversed = mutable.Set.empty[W]
+    val traversed = mutable.Set.empty[map.K]
     val pf = f.lift
     for {
       (k, v) <- map(coll)
-      x <- pf(other.get(k).fold[(Option[map.V], Option[W])]((Some(v), None)){ w => traversed += w; (Some(v), Some(w)) })
+      x <- pf(other.get(k).fold[(Option[map.V], Option[W])]((Some(v), None)){ w => traversed += k; (Some(v), Some(w)) })
     } {
       b += k -> x
     }
     for {
-      (k, w) <- other if !traversed(w)
+      (k, w) <- other if !traversed(k)
       x <- pf((None, Some(w)))
     } {
       b += k -> x
