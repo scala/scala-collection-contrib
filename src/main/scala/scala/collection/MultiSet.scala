@@ -12,7 +12,7 @@ trait MultiSet[A]
     with MultiSetOps[A, MultiSet, MultiSet[A]]
     with Equals {
 
-  override protected[this] def className: String = "MultiSet"
+  override protected def className: String = "MultiSet"
 
   override def iterableFactory: IterableFactory[MultiSet] = MultiSet
   override protected def fromSpecific(coll: IterableOnce[A]): MultiSet[A] = iterableFactory.from(coll)
@@ -24,14 +24,11 @@ trait MultiSet[A]
   override def equals(o: Any): Boolean = o match {
     case that: MultiSet[A @unchecked] =>
       (this eq that) ||
-        (that canEqual this) &&
-          (this.size == that.size) && {
-          try {
-            occurrences forall { case (elem, n) => that.get(elem) == n }
-          } catch {
-            case _: ClassCastException => false
-          }
-        }
+        that.canEqual(this) &&
+        this.size == that.size && (
+          try occurrences.forall { case (elem, n) => that.get(elem) == n }
+          catch { case _: ClassCastException => false }
+        )
     case _ => false
   }
 
@@ -42,10 +39,10 @@ trait MultiSet[A]
 trait MultiSetOps[A, +CC[X] <: MultiSet[X], +C <: MultiSet[A]]
   extends IterableOps[A, CC, C] {
 
-  protected[this] def fromSpecificOccurrences(it: Iterable[(A, Int)]): C =
+  protected def fromSpecificOccurrences(it: Iterable[(A, Int)]): C =
     fromSpecific(it.view.flatMap { case (e, n) => new View.Fill(n)(e) })
 
-  protected[this] def fromOccurrences[E](it: Iterable[(E, Int)]): CC[E] =
+  protected def fromOccurrences[E](it: Iterable[(E, Int)]): CC[E] =
     // Note new MultiSet(it.to(Map)) would be more efficient but would also loose duplicates
     iterableFactory.from(it.view.flatMap { case (e, n) => new View.Fill(n)(e) })
 

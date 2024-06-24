@@ -20,8 +20,23 @@ lazy val collectionContrib = crossProject(JVMPlatform, JSPlatform, NativePlatfor
     scalaModuleAutomaticModuleName := Some("scala.collection.contrib"),
     Compile / compile / scalacOptions ++= {
       CrossVersion.partialVersion(scalaVersion.value) match {
-        case Some((2, _)) => Seq("-opt-warnings", "-Werror", "-Wconf:origin=scala.collection.IterableOps.toIterable:s")
-        case _            => Seq("-Xfatal-warnings", "-Wconf:cat=deprecation:s")
+        case Some((2, _)) => Seq(
+          "-Wconf:origin=scala.collection.IterableOps.toIterable:s", // internal usage; annotating @nowarn is clutter
+          "-Werror",
+          "-Wnonunit-statement",
+          "-Wopt",
+          "-opt:inline:<sources>",
+          "-opt:inline:scala.util.package$chaining$,scala.util.ChainingSyntax,scala.util.ChainingOps$",
+          "-Wvalue-discard",
+          "-Xlint",
+          "-Xsource:3-cross",
+          )
+        case _            => Seq(
+          "-Wconf:cat=deprecation:s", // Scala 3 lacks origin, src arrives in 3.3.4 & 3.5
+          "-Wconf:id=E175:s",
+          "-Werror",
+          "-Wnonunit-statement", // warns on uni-limbed if
+          )
       }
     },
     Compile / doc / scalacOptions ++= {
