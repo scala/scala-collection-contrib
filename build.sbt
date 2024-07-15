@@ -45,7 +45,7 @@ lazy val collectionContrib = crossProject(JVMPlatform, JSPlatform, NativePlatfor
         case _            => Seq.empty
       }
     },
-    testOptions += Tests.Argument(TestFrameworks.JUnit, "-q", "-v", "-s", "-a"),
+    testOptions += Tests.Argument(TestFrameworks.JUnit, "-v", "-s", "-a"),
     Test / parallelExecution := false,  // why?
     libraryDependencies ++= Seq(
       "junit"            % "junit"           % "4.13.2" % Test,
