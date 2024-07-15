@@ -17,7 +17,7 @@ package object decorators {
   implicit def mapDecorator[C](coll: C)(implicit map: IsMap[C]): MapDecorator[C, map.type] =
     new MapDecorator(coll)(map)
 
-  implicit def bitSetDecorator[C <: BitSet with BitSetOps[C]](bs: C): BitSetDecorator[C] =
+  implicit def bitSetDecorator[C <: BitSet & BitSetOps[C]](bs: C): BitSetDecorator[C] =
     new BitSetDecorator(bs)
 
   implicit def mutableBitSetDecorator(bs: mutable.BitSet): MutableBitSetDecorator =

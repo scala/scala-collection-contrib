@@ -13,7 +13,7 @@ trait MultiDict[K, V]
     with MultiDictOps[K, V, MultiDict, MultiDict[K, V]]
     with Equals {
 
-  override protected[this] def className: String = "MultiDict"
+  override protected def className: String = "MultiDict"
 
   def multiDictFactory: MapFactory[MultiDict] = MultiDict
   override protected def fromSpecific(coll: IterableOnce[(K, V)]): MultiDict[K, V] = multiDictFactory.from(coll)
@@ -26,14 +26,11 @@ trait MultiDict[K, V]
   override def equals(o: Any): Boolean = o match {
     case that: MultiDict[K @unchecked, _] =>
       (this eq that) ||
-        (that canEqual this) &&
-          (this.size == that.size) && {
-          try {
-            sets forall { case (k, vs) => that.sets.get(k).contains(vs) }
-          } catch {
-            case _: ClassCastException => false
-          }
-        }
+        that.canEqual(this) &&
+        this.size == that.size && (
+          try sets.forall { case (k, vs) => that.sets.get(k).contains(vs) }
+          catch { case _: ClassCastException => false }
+        )
     case _ => false
   }
 
@@ -205,7 +202,7 @@ trait MultiDictOps[K, V, +CC[X, Y] <: MultiDict[X, Y], +C <: MultiDict[K, V]]
 object MultiDictOps {
 
   class WithFilter[K, V, +IterableCC[_], +CC[X, Y] <: MultiDict[X, Y]](
-    `this`: MultiDictOps[K, V, CC, _] with IterableOps[(K, V), IterableCC, _],
+    `this`: MultiDictOps[K, V, CC, ?] & IterableOps[(K, V), IterableCC, ?],
     p: ((K, V)) => Boolean
   ) extends IterableOps.WithFilter[(K, V), IterableCC](`this`, p) {
 
