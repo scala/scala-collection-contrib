@@ -31,20 +31,18 @@ class SortedMultiDict[K, V] private (elems: SortedMap[K, Set[V]])(implicit val o
 
   def addOne(elem: (K, V)): this.type = {
     val (k, v) = elem
-    elems.updateWith(k) {
-      case None     => Some(Set(v))
-      case Some(vs) => Some(vs += v)
-    }
+    val vs = elems.getOrElseUpdate(k, Set.empty[V])
+    vs.addOne(v)
     this
   }
 
   def subtractOne(elem: (K, V)): this.type = {
     val (k, v) = elem
-    elems.updateWith(k) {
+    elems.get(k) match {
       case Some(vs) =>
-        vs -= v
-        if (vs.nonEmpty) Some(vs) else None
-      case None => None
+        vs.subtractOne(v)
+        if (vs.isEmpty) elems.subtractOne(k)
+      case _ =>
     }
     this
   }
@@ -54,7 +52,7 @@ class SortedMultiDict[K, V] private (elems: SortedMap[K, Set[V]])(implicit val o
     * @return the collection itself
     */
   def removeKey(key: K): this.type = {
-    elems -= key
+    elems.subtractOne(key)
     this
   }
 

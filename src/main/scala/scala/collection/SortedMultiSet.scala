@@ -118,7 +118,7 @@ trait SortedMultiSetOps[A, +CC[X] <: MultiSet[X], +C <: MultiSet[A]]
     *         is the minimum of the lengths of `this` and `that`
     */
   def zip[B](that: Iterable[B])(implicit ev: Ordering[B]): CC[(A @uncheckedVariance, B)] = // sound bcs of VarianceNote
-    sortedFromIterable(new View.Zip(toIterable, that))(Ordering.Tuple2(ordering, implicitly))
+    sortedFromIterable(new View.Zip(toIterable, that))(using Ordering.Tuple2(ordering, implicitly))
 
   /**
     * @return a new collection resulting from applying the given partial
@@ -147,7 +147,7 @@ trait SortedMultiSetOps[A, +CC[X] <: MultiSet[X], +C <: MultiSet[A]]
   // --- Override return type of methods that returned an unsorted MultiSet
 
   override def zipWithIndex: CC[(A, Int)] =
-    sortedFromIterable(new View.ZipWithIndex(toIterable))(Ordering.Tuple2(ordering, implicitly))
+    sortedFromIterable(new View.ZipWithIndex(toIterable))(using Ordering.Tuple2(ordering, implicitly))
 
 }
 
@@ -158,7 +158,7 @@ object SortedMultiSetOps {
     * @define coll sorted collection
     */
   class WithFilter[A, +IterableCC[_], +CC[X] <: MultiSet[X]](
-    `this`: SortedMultiSetOps[A, CC, _] with IterableOps[A, IterableCC, _],
+    `this`: SortedMultiSetOps[A, CC, ?] & IterableOps[A, IterableCC, ?],
     p: A => Boolean
   ) extends IterableOps.WithFilter[A, IterableCC](`this`, p) {
 

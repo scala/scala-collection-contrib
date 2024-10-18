@@ -2,7 +2,7 @@ package scala.collection.decorators
 
 import scala.collection.{BitSet, BitSetOps}
 
-class BitSetDecorator[+C <: BitSet with BitSetOps[C]](protected val bs: C) {
+class BitSetDecorator[+C <: BitSet & BitSetOps[C]](protected val bs: C) {
 
   import BitSetDecorator._
   import BitSetOps._
