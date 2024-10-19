@@ -41,7 +41,7 @@ lazy val collectionContrib = crossProject(JVMPlatform, JSPlatform, NativePlatfor
     },
     Compile / doc / scalacOptions ++= {
       CrossVersion.partialVersion(scalaVersion.value) match {
-        case Some((2, _)) => Seq("-implicits", "-groups", "-nowarn")
+        case Some((2, _)) => Seq("-implicits", "-groups", "-nowarn", "-Xsource:3-cross")
         case _            => Seq.empty
       }
     },
