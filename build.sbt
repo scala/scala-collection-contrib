@@ -1,4 +1,4 @@
-ThisBuild / scalaVersion := "3.3.4"
+ThisBuild / scalaVersion := "3.3.5"
 ThisBuild / crossScalaVersions := Seq((ThisBuild / scalaVersion).value, "2.13.16")
 
 lazy val root = project.in(file("."))
@@ -32,7 +32,7 @@ lazy val collectionContrib = crossProject(JVMPlatform, JSPlatform, NativePlatfor
           "-Xsource:3-cross",
           )
         case _            => Seq(
-          "-Wconf:cat=deprecation:s", // Scala 3 lacks origin, src arrives in 3.3.4 & 3.5
+          "-Wconf:cat=deprecation:s", // Scala 3 lacks origin, src arrives in 3.3.5 & 3.5
           "-Wconf:id=E175:s",
           "-Werror",
           "-Wnonunit-statement", // warns on uni-limbed if
