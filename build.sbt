@@ -1,4 +1,4 @@
-ThisBuild / scalaVersion := "3.3.4"
+ThisBuild / scalaVersion := "3.3.5"
 ThisBuild / crossScalaVersions := Seq((ThisBuild / scalaVersion).value, "2.13.16")
 
 lazy val root = project.in(file("."))
@@ -18,12 +18,14 @@ lazy val collectionContrib = crossProject(JVMPlatform, JSPlatform, NativePlatfor
     name := "scala-collection-contrib",
     versionPolicyIntention := Compatibility.None,
     scalaModuleAutomaticModuleName := Some("scala.collection.contrib"),
+    Compile / compile / scalacOptions ++= Seq(
+      "-Werror",
+      "-Wnonunit-statement",
+      "-Wconf:origin=scala.collection.IterableOps.toIterable:s", // internal usage; annotating @nowarn is clutter
+    ),
     Compile / compile / scalacOptions ++= {
       CrossVersion.partialVersion(scalaVersion.value) match {
         case Some((2, _)) => Seq(
-          "-Wconf:origin=scala.collection.IterableOps.toIterable:s", // internal usage; annotating @nowarn is clutter
-          "-Werror",
-          "-Wnonunit-statement",
           "-Wopt",
           "-opt:inline:<sources>",
           "-opt:inline:scala.util.package$chaining$,scala.util.ChainingSyntax,scala.util.ChainingOps$",
@@ -32,10 +34,7 @@ lazy val collectionContrib = crossProject(JVMPlatform, JSPlatform, NativePlatfor
           "-Xsource:3-cross",
           )
         case _            => Seq(
-          "-Wconf:cat=deprecation:s", // Scala 3 lacks origin, src arrives in 3.3.4 & 3.5
           "-Wconf:id=E175:s",
-          "-Werror",
-          "-Wnonunit-statement", // warns on uni-limbed if
           )
       }
     },
