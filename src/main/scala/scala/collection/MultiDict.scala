@@ -131,7 +131,7 @@ trait MultiDictOps[K, V, +CC[X, Y] <: MultiDict[X, Y], +C <: MultiDict[K, V]]
 
   /** Concatenate the entries given in `that` iterable to `this` multidict */
   def concat(that: IterableOnce[(K, V)]): C = fromSpecific(that match {
-    case that: collection.Iterable[(K, V)] => new View.Concat(toIterable, that)
+    case that: collection.Iterable[(K, V) @unchecked] => new View.Concat(toIterable, that)
     case _ => iterator ++ that.iterator
   })
 

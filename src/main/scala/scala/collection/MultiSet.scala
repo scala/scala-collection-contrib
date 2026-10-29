@@ -73,7 +73,7 @@ trait MultiSetOps[A, +CC[X] <: MultiSet[X], +C <: MultiSet[A]]
     * @param that the collection of elements to add to this multiset
     */
   def concat(that: IterableOnce[A]): C = fromSpecific(that match {
-    case that: collection.Iterable[A] => new View.Concat(this, that)
+    case that: collection.Iterable[A @unchecked] => new View.Concat(this, that)
     case _ => iterator.concat(that.iterator)
   })
 
